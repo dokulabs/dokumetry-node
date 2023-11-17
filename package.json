@@ -1,0 +1,35 @@
+{
+  "name": "dokulabs",
+  "version": "0.0.1",
+  "description": "An NPM Package for tracking OpenAI API calls and sending usage metrics to Doku",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha tests/**/*.test.cjs"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dokulabs/node-sdk"
+  },
+  "keywords": [
+    "OpenAI",
+    "Cohere",
+    "Claude",
+    "Anthropic",
+    "ChatGPT",
+    "GPT",
+    "observability",
+    "monitoring"
+  ],
+  "author": "Doku Labs",
+  "license": "ISC",
+  "devDependencies": {
+    "@anthropic-ai/tokenizer": "^0.0.4",
+    "chai": "^4.3.10",
+    "cohere-ai": "^7.2.0",
+    "eslint": "^8.53.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^10.2.0",
+    "openai": "^4.17.3"
+  }
+}
