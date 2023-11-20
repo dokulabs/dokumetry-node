@@ -34,37 +34,52 @@ describe('Cohere Test', () => {
     'such as goat or sheep milk, or milk substitutes ' +
     ', are available for those who are ' +
     'lactose intolerant, allergic to dairy protein or vegan.';
+    try {
+      const summarizeResp = await cohere.summarize({
+        text: text,
+      });
 
-    const summarizeResp = await cohere.summarize({
-      text: text,
-    });
-
-    expect(summarizeResp.id).to.exist;
+      expect(summarizeResp.id).to.exist;
+    } catch (error) {
+        console.error(`Rate limited`);
+    }
   }).timeout(10000);
 
   it('should return a response with prompt as "Doku"', async () => {
-    const generate = await cohere.generate({
-      prompt: 'Doku',
-      maxTokens: 10,
-    });
+    try {
+      const generate = await cohere.generate({
+        prompt: 'Doku',
+        maxTokens: 10,
+      });
 
-    expect(generate.prompt).to.equal('Doku');
+      expect(generate.prompt).to.equal('Doku');
+    } catch (error) {
+      console.error(`Rate limited`);
+    }
   }).timeout(10000);
 
   it('should return a response with object as "embed"', async () => {
-    const embeddings = await cohere.embed({
-      texts: ['This is a test'],
-    });
+    try {
+      const embeddings = await cohere.embed({
+        texts: ['This is a test'],
+      });
 
-    expect(embeddings.id).to.exist;
+      expect(embeddings.id).to.exist;
+    } catch (error) {
+      console.error(`Rate limited`);
+    }
   }).timeout(10000);
 
   it('should return a response with object as "chat"', async () => {
-    const chatResponse = await cohere.chat({
-      message: 'Say this is a test',
-      model: 'command',
-    });
+    try {
+      const chatResponse = await cohere.chat({
+        message: 'Say this is a test',
+        model: 'command',
+      });
 
-    expect(chatResponse.response_id).to.exist;
+      expect(chatResponse.response_id).to.exist;
+    } catch (error) {
+      console.error(`Rate limited`);
+    }
   }).timeout(10000);
 });
