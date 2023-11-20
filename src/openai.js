@@ -6,6 +6,8 @@ import {sendData} from './helpers.js';
  * @param {Object} func - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
+ * @param {string} environment - The environment.
+ * @param {string} applicationName - The application name.
  * @return {void}
  *
  * @jsondoc
@@ -23,7 +25,7 @@ import {sendData} from './helpers.js';
  *   }
  * }
  */
-export default function init(func, dokuUrl, token) {
+export default function init(func, dokuUrl, token, environment, applicationName) {
   // Save original method
   const originalChatCreate = func.chat.completions.create;
   const originalCompletionsCreate = func.completions.create;
@@ -42,7 +44,9 @@ export default function init(func, dokuUrl, token) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'openai.chat.completions',
       requestDuration: duration,
       model: params.model,
@@ -68,7 +72,9 @@ export default function init(func, dokuUrl, token) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'openai.completions',
       requestDuration: duration,
       model: params.model,
@@ -95,7 +101,9 @@ export default function init(func, dokuUrl, token) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'openai.embeddings',
       requestDuration: duration,
       model: params.model,
@@ -116,7 +124,9 @@ export default function init(func, dokuUrl, token) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'openai.fine_tuning',
       requestDuration: duration,
       model: params.model,
@@ -144,7 +154,9 @@ export default function init(func, dokuUrl, token) {
 
     for (const item of response.data) {
       const data = {
-        source: 'NodeJS',
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
         endpoint: 'openai.images.create',
         requestDuration: duration,
         model: model,
@@ -173,7 +185,9 @@ export default function init(func, dokuUrl, token) {
     }
     for (const item of response.data) {
       const data = {
-        source: 'NodeJS',
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
         endpoint: 'openai.images.create.variations',
         requestDuration: duration,
         model: model,
@@ -194,7 +208,9 @@ export default function init(func, dokuUrl, token) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'openai.audio.speech.create',
       requestDuration: duration,
       model: params.model,

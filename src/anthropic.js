@@ -4,9 +4,11 @@ import {countTokens} from '@anthropic-ai/tokenizer';
 /**
  * Initializes Anthropic functionality with performance tracking.
  *
+ * @param {Object} func - The Anthropic function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
- * @param {Object} func - The Anthropic function object.
+ * @param {string} environment - The environment.
+ * @param {string} applicationName - The application name.
  * @return {void}
  *
  * @jsondoc
@@ -24,7 +26,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   }
  * }
  */
-export default function init(dokuUrl, token, func) {
+export default function init(func, dokuUrl, token, environment, applicationName) {
   const originalCompletionsCreate = func.completions.create;
 
   // Define wrapped method
@@ -35,7 +37,9 @@ export default function init(dokuUrl, token, func) {
     const duration = (end - start) / 1000;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'anthropic.completions',
       completionTokens: countTokens(response.completion),
       promptTokens: countTokens(prompt),

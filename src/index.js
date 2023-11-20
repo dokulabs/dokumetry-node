@@ -6,6 +6,8 @@ class DokuConfig {
   static dokuUrl = null;
   static token = null;
   static func = null;
+  static environment = null;
+  static applicationName = null;
 }
 
 /**
@@ -14,6 +16,8 @@ class DokuConfig {
  * @param {Object} func - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
+ * @param {string} environment - The environment.
+ * @param {string} applicationName - The application name.
  * @return {void}
  *
  * @jsondoc
@@ -31,17 +35,19 @@ class DokuConfig {
  *   }
  * }
  */
-export default function init(func, dokuUrl, token) {
+export default function init(func, dokuUrl, token, environment="default", applicationName="default") {
   DokuConfig.dokuUrl = dokuUrl;
   DokuConfig.token = token;
   DokuConfig.func = func;
+  DokuConfig.environment = environment;
+  DokuConfig.applicationName = applicationName;
 
   if (func.chat && typeof func.chat.completions.create === 'function') {
-    initOpenAI(func, dokuUrl, token);
+    initOpenAI(func, dokuUrl, token, environment, applicationName);
   } else if (func.generate && typeof func.generate === 'function') {
-    initCohere(func, dokuUrl, token);
+    initCohere(func, dokuUrl, token, environment, applicationName);
   } else if (typeof func.summarize=== 'function') {
-    initAnthropic(func, dokuUrl, token);
+    initAnthropic(func, dokuUrl, token, environment, applicationName);
   }
 }
 

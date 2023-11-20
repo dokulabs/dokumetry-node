@@ -30,6 +30,8 @@ function countTokens(text) {
  * @param {Object} func - The Cohere function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
+ * @param {string} environment - The environment.
+ * @param {string} applicationName - The application name.
  * @return {void}
  *
  * @jsondoc
@@ -47,7 +49,7 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function init(func, dokuUrl, token) {
+export default function init(func, dokuUrl, token, environment, applicationName) {
   const originalGenerate = func.generate;
   const originalEmbed = func.embed;
   const originalChat = func.chat;
@@ -65,7 +67,9 @@ export default function init(func, dokuUrl, token) {
 
     for (const generation of response.generations) {
       const data = {
-        source: 'NodeJS',
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
         endpoint: 'cohere.generate',
         completionTokens: countTokens(generation.text),
         promptTokens: countTokens(prompt),
@@ -95,7 +99,9 @@ export default function init(func, dokuUrl, token) {
     const prompt = params.texts;
 
     const data = {
-      source: 'NodeJS',
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
       endpoint: 'cohere.embed',
       requestDuration: duration,
       model: model,
@@ -119,7 +125,9 @@ export default function init(func, dokuUrl, token) {
 
     if (!params.hasOwnProperty('stream') || params.stream !== true) {
       const data = {
-        source: 'NodeJS',
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
         endpoint: 'cohere.chat',
         requestDuration: duration,
         completionTokens: response.token_count['response_tokens'],
@@ -148,7 +156,9 @@ export default function init(func, dokuUrl, token) {
 
     if (!params.hasOwnProperty('stream') || params.stream !== true) {
       const data = {
-        source: 'NodeJS',
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
         endpoint: 'cohere.summarize',
         requestDuration: duration,
         completionTokens: countTokens(response.summary),
