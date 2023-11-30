@@ -9,6 +9,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
+ * @param {boolean} skipResp - To skip waiting for API resopnse.
  * @return {void}
  *
  * @jsondoc
@@ -17,7 +18,10 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   "params": [
  *     {"name": "dokuUrl", "type": "string", "description": "Doku URL"},
  *     {"name": "token", "type": "string", "description": "Auth Token"},
- *     {"name": "func", "type": "Object", "description": "The Anthropic object"}
+ *     {"name": "func", "type": "Object", "description": "The Anthropic object"},
+ *     {"name": "environment", "type": "string", "description": "Environment"},
+ *     {"name": "applicationName", "type": "string", "description": "Application Name"},
+ *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
  *   ],
  *   "returns": {"type": "void"},
  *   "example": {
@@ -26,7 +30,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   }
  * }
  */
-export default function init(func, dokuUrl, token, environment, applicationName) {
+export default function initAnthropic(func, dokuUrl, token, environment, applicationName, skipResp) {
   const originalCompletionsCreate = func.completions.create;
 
   // Define wrapped method
@@ -41,6 +45,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'anthropic.completions',
+      skipResp: skipResp,
       completionTokens: countTokens(response.completion),
       promptTokens: countTokens(prompt),
       requestDuration: duration,

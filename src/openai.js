@@ -8,6 +8,7 @@ import {sendData} from './helpers.js';
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
+ * @param {boolean} skipResp - To skip waiting for API resopnse.
  * @return {void}
  *
  * @jsondoc
@@ -16,7 +17,10 @@ import {sendData} from './helpers.js';
  *   "params": [
  *     {"name": "func", "type": "Object", "description": "OpenAI function."},
  *     {"name": "dokuUrl", "type": "string", "description": "The URL"},
- *     {"name": "token", "type": "string", "description": "The auth token."}
+ *     {"name": "token", "type": "string", "description": "The auth token."},
+ *     {"name": "environment", "type": "string", "description": "The environment."},
+ *     {"name": "applicationName", "type": "string", "description": "The application name."},
+ *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
  *   ],
  *   "returns": {"type": "void"},
  *   "example": {
@@ -25,7 +29,7 @@ import {sendData} from './helpers.js';
  *   }
  * }
  */
-export default function init(func, dokuUrl, token, environment, applicationName) {
+export default function initOpenAI(func, dokuUrl, token, environment, applicationName, skipResp) {
   // Save original method
   const originalChatCreate = func.chat.completions.create;
   const originalCompletionsCreate = func.completions.create;
@@ -43,14 +47,34 @@ export default function init(func, dokuUrl, token, environment, applicationName)
     const end = performance.now();
     const duration = (end - start) / 1000;
 
+    let formattedMessages = [];
+    for (let message of params.messages) {
+      let role = message.role;
+      let content = message.content;
+
+      if (Array.isArray(content)) {
+        let contentStr = content.map(item => {
+          if (item.type) {
+            return `${item.type}: ${item.text || item.image_url}`;
+          } else {
+            return `text: ${item.text}`;
+          }
+        }).join(", ");
+        formattedMessages.push(`${role}: ${contentStr}`);
+      } else {
+        formattedMessages.push(`${role}: ${content}`);
+      }
+    }
+    let prompt = formattedMessages.join("\n");
     const data = {
       environment: environment,
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'openai.chat.completions',
+      skipResp: skipResp,
       requestDuration: duration,
       model: params.model,
-      prompt: params.messages[0].content,
+      prompt: prompt,
     };
 
     if (!params.hasOwnProperty('stream') || params.stream !== true) {
@@ -58,7 +82,20 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       data.promptTokens = response.usage.prompt_tokens;
       data.totalTokens = response.usage.total_tokens;
       data.finishReason = response.choices[0].finish_reason;
-      data.response = response.choices[0].message.content;
+    }
+
+    if (!params.hasOwnProperty('tools')) {
+      if (!params.hasOwnProperty('n') || params.n === 1) {
+        data.response = response.choices[0].message.content;
+      } else {
+        let i = 0;
+        while (i < params.n && i < response.choices.length) {
+          data.response = response.choices[i].message.content;
+          i++;
+          sendData(data, dokuUrl, token);
+        }
+        return response;
+      }
     }
 
     sendData(data, dokuUrl, token);
@@ -76,6 +113,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'openai.completions',
+      skipResp: skipResp,
       requestDuration: duration,
       model: params.model,
       prompt: params.prompt,
@@ -86,11 +124,24 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       data.promptTokens = response.usage.prompt_tokens;
       data.totalTokens = response.usage.total_tokens;
       data.finishReason = response.choices[0].finish_reason;
-      data.response = response.choices[0].text;
     }
 
-    sendData(data, dokuUrl, token);
-
+    if (!params.hasOwnProperty('tools')) {
+      if (!params.hasOwnProperty('n') || params.n === 1) {
+        data.response = response.choices[0].text;
+      } else {
+        let i = 0;
+        while (i < params.n && i < response.choices.length) {
+          data.response = response.choices[i].text;
+          i++;
+          console.log(data);
+          // sendData(data, doku_url, token);
+        }
+        return response;
+      }
+    }
+    console.log(data);
+    // sendData(data, dokuUrl, token);
     return response;
   };
 
@@ -105,6 +156,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'openai.embeddings',
+      skipResp: skipResp,
       requestDuration: duration,
       model: params.model,
       prompt: params.input,
@@ -128,6 +180,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'openai.fine_tuning',
+      skipResp: skipResp,
       requestDuration: duration,
       model: params.model,
       finetuneJobId: response.id,
@@ -158,6 +211,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
         applicationName: applicationName,
         sourceLanguage: 'Javascript',
         endpoint: 'openai.images.create',
+        skipResp: skipResp,
         requestDuration: duration,
         model: model,
         prompt: params.prompt,
@@ -189,6 +243,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
         applicationName: applicationName,
         sourceLanguage: 'Javascript',
         endpoint: 'openai.images.create.variations',
+        skipResp: skipResp,
         requestDuration: duration,
         model: model,
         imageSize: size,
@@ -212,6 +267,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'openai.audio.speech.create',
+      skipResp: skipResp,
       requestDuration: duration,
       model: params.model,
       prompt: params.input,

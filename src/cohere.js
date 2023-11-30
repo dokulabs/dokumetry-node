@@ -32,6 +32,7 @@ function countTokens(text) {
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
+ * @param {boolean} skipResp - To skip waiting for API resopnse.
  * @return {void}
  *
  * @jsondoc
@@ -40,7 +41,10 @@ function countTokens(text) {
  *   "params": [
  *     {"name": "func", "type": "Object", "description": "Cohere object"},
  *     {"name": "dokuUrl", "type": "string", "description": "URL for Doku"},
- *     {"name": "token", "type": "string", "description": "Auth token."}
+ *     {"name": "token", "type": "string", "description": "Auth token."},
+ *     {"name": "environment", "type": "string", "description": "Environment."},
+ *     {"name": "applicationName", "type": "string", "description": "Application name."},
+ *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
  *   ],
  *   "returns": {"type": "void"},
  *   "example": {
@@ -49,7 +53,7 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function init(func, dokuUrl, token, environment, applicationName) {
+export default function initCohere(func, dokuUrl, token, environment, applicationName, skipResp) {
   const originalGenerate = func.generate;
   const originalEmbed = func.embed;
   const originalChat = func.chat;
@@ -71,6 +75,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
         applicationName: applicationName,
         sourceLanguage: 'Javascript',
         endpoint: 'cohere.generate',
+        skipResp: skipResp,
         completionTokens: countTokens(generation.text),
         promptTokens: countTokens(prompt),
         requestDuration: duration,
@@ -103,6 +108,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
       applicationName: applicationName,
       sourceLanguage: 'Javascript',
       endpoint: 'cohere.embed',
+      skipResp: skipResp,
       requestDuration: duration,
       model: model,
       prompt: prompt,
@@ -129,6 +135,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
         applicationName: applicationName,
         sourceLanguage: 'Javascript',
         endpoint: 'cohere.chat',
+        skipResp: skipResp,
         requestDuration: duration,
         completionTokens: response.token_count['response_tokens'],
         promptTokens: response.token_count['prompt_tokens'],
@@ -160,6 +167,7 @@ export default function init(func, dokuUrl, token, environment, applicationName)
         applicationName: applicationName,
         sourceLanguage: 'Javascript',
         endpoint: 'cohere.summarize',
+        skipResp: skipResp,
         requestDuration: duration,
         completionTokens: countTokens(response.summary),
         promptTokens: countTokens(prompt),
