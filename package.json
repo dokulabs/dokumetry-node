@@ -23,8 +23,10 @@
   ],
   "author": "Doku Labs",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@anthropic-ai/tokenizer": "^0.0.4",
+  },
+  "devDependencies": {
     "chai": "^4.3.10",
     "cohere-ai": "^7.4.0",
     "eslint": "^8.53.0",
