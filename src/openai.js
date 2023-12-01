@@ -207,6 +207,8 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       imageFormat = 'b64_json';
     }
 
+    const quality = params.quality ?? 'standard';
+
     for (const item of response.data) {
       const data = {
         environment: environment,
@@ -218,6 +220,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         model: model,
         prompt: params.prompt,
         imageSize: size,
+        imageQuality: quality,
         revisedPrompt: item.revised_prompt || null,
         image: item[imageFormat],
       };
@@ -249,6 +252,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         requestDuration: duration,
         model: model,
         imageSize: size,
+        imageQuality: "standard",
         image: item[imageFormat],
       };
 
