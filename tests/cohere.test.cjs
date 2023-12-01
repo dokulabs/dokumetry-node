@@ -9,7 +9,7 @@ describe('Cohere Test', () => {
   before(async () => {
     const module = await import('../src/cohere.js');
     initCohere = module.default;
-    initCohere(cohere, process.env.DOKU_URL, process.env.DOKU_TOKEN);
+    initCohere(cohere, {dokuURL: process.env.DOKU_URL, token: process.env.DOKU_TOKEN});
   });
 
   it('should return a response with "created" field', async () => {

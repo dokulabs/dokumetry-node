@@ -12,7 +12,7 @@ describe('OpenAI Test', () => {
 
     const module = await import('../src/openai.js');
     initOpenAI = module.default;
-    initOpenAI(openai, process.env.DOKU_URL, process.env.DOKU_TOKEN);
+    initOpenAI(openai, {dokuURL: process.env.DOKU_URL, token: process.env.DOKU_TOKEN});
   });
 
   it('should return a response with object as "chat.completion"', async () => {
