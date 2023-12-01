@@ -29,7 +29,7 @@ import {sendData} from './helpers.js';
  *   }
  * }
  */
-export default function initOpenAI(func, dokuUrl, token, environment, applicationName, skipResp) {
+export default function initOpenAI(func, { dokuUrl, token, environment, applicationName, skipResp }) {
   // Save original method
   const originalChatCreate = func.chat.completions.create;
   const originalCompletionsCreate = func.completions.create;
@@ -99,6 +99,7 @@ export default function initOpenAI(func, dokuUrl, token, environment, applicatio
     }
 
     sendData(data, dokuUrl, token);
+
     return response;
   };
 
@@ -140,8 +141,9 @@ export default function initOpenAI(func, dokuUrl, token, environment, applicatio
         return response;
       }
     }
-    console.log(data);
-    // sendData(data, dokuUrl, token);
+
+    sendData(data, dokuUrl, token);
+
     return response;
   };
 

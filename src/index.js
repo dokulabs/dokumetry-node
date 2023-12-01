@@ -44,7 +44,7 @@ class DokuConfig {
  *   }
  * }
  */
-export default function init(func, dokuUrl, token, environment="default", applicationName="default", skipResp=false) {
+export default function init(func, {dokuUrl, token, environment="default", applicationName="default", skipResp=false}) {
   DokuConfig.dokuUrl = dokuUrl;
   DokuConfig.token = token;
   DokuConfig.func = func;
@@ -53,10 +53,10 @@ export default function init(func, dokuUrl, token, environment="default", applic
   DokuConfig.skipResp = skipResp;
 
   if (func.chat && typeof func.chat.completions.create === 'function') {
-    initOpenAI(func, dokuUrl, token, environment, applicationName, skipResp);
+    initOpenAI(func, { dokuUrl, token, environment, applicationName, skipResp });
   } else if (func.generate && typeof func.generate === 'function') {
-    initCohere(func, dokuUrl, token, environment, applicationName, skipResp);
+    initCohere(func, {dokuUrl, token, environment, applicationName, skipResp});
   } else if (typeof func.summarize=== 'function') {
-    initAnthropic(func, dokuUrl, token, environment, applicationName, skipResp);
+    initAnthropic(func, {dokuUrl, token, environment, applicationName, skipResp});
   }
 }

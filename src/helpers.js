@@ -36,10 +36,12 @@ export async function sendData(data, dokuUrl, authToken) {
       },
       body: JSON.stringify(data),
     });
+    
     if (!response.ok) {
       throw new Error(`Error sending Data: HTTP status ${response.status}`);
     }
     return response;
+    
   } catch (err) {
     throw new Error(`Error sending Metrics: ${err}`);
   }

@@ -53,7 +53,7 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function initCohere(func, dokuUrl, token, environment, applicationName, skipResp) {
+export default function initCohere(func, {dokuUrl, token, environment, applicationName, skipResp}) {
   const originalGenerate = func.generate;
   const originalEmbed = func.embed;
   const originalChat = func.chat;
