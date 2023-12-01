@@ -96,6 +96,8 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         }
         return response;
       }
+    } else {
+      data.response = "Function called with tools";
     }
 
     sendData(data, dokuUrl, token);
