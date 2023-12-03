@@ -1,9 +1,9 @@
 # Doku Node SDK
 
 An NPM Package designed for tracking and monitoring Language Learning Model (LLM) usage, providing comprehensive observability features for 
- - [ ] OpenAI
- - [ ] Anthropic
- - [ ] Cohere
+ - [x] OpenAI
+ - [x] Anthropic
+ - [x] Cohere
 
 ## Features
 
