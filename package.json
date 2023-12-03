@@ -1,6 +1,6 @@
 {
   "name": "dokulabs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An NPM Package for tracking OpenAI API calls and sending usage metrics to Doku",
   "main": "src/index.js",
   "scripts": {
