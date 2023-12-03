@@ -1,5 +1,8 @@
 # Doku Node SDK
 
+[![Tests](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml)
+[![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
+
 Doku Node SDK empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
 
  - [x] OpenAI
