@@ -1,6 +1,12 @@
 # Doku Node SDK
 
-Doku Node SDK enhances your tracking and monitoring capabilities by seamlessly transmitting language learning model (LLM) usage data and metrics to the Doku Platform. This integration ensures that you have a centralized hub for comprehensive observability, allowing you to analyze, manage, and optimize your language learning models effectively. With real-time insights into usage patterns, performance metrics, and other relevant data, the Doku Node SDK empowers you to make informed decisions and maximize the efficiency of your language learning applications.
+Doku Node SDK empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
+
+ - [x] OpenAI
+ - [x] Anthropic
+ - [x] Cohere
+
+All LLM observability usage data is sent directly to the Doku Platform for streamlined tracking. Get started with Doku Node SDK for simplified and effective observability.
 
 ## Features
 
