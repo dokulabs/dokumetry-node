@@ -10,9 +10,9 @@ describe('OpenAI Test', () => {
       apiKey: process.env.OPENAI_API_TOKEN,
     });
 
-    const module = await import('../src/openai.js');
-    initOpenAI = module.default;
-    initOpenAI(openai, {dokuURL: process.env.DOKU_URL, token: process.env.DOKU_TOKEN});
+    const module = await import('../src/index.js');
+    init = module.default;
+    await init(openai, {dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
   });
 
   it('should return a response with object as "chat.completion"', async () => {
@@ -54,12 +54,8 @@ describe('OpenAI Test', () => {
       expect(fineTuningJob.object).to.equal('fine_tuning.job');
     } catch (error) {
       // Check if it's a rate limit error
-      if (error.response && error.response.statusCode === 429) {
-        // Extract information from the error JSON
-        const errorJson = error.response.body;
-        const rateLimitCode = errorJson.error.code;
-
-        console.error(`Rate limit errorCode: ${rateLimitCode}`);
+      if (error.code == "daily_rate_limit_exceeded") {
+        console.error(`Daily Rate limit Reached`);
       }
     }
   }).timeout(10000);

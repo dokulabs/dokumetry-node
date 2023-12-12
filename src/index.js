@@ -52,9 +52,9 @@ export default function init(func, {dokuUrl, token, environment="default", appli
   DokuConfig.applicationName = applicationName;
   DokuConfig.skipResp = skipResp;
 
-  if (func.chat && typeof func.chat.completions.create === 'function') {
+  if (func.fineTuning && typeof func.completions.create === 'function') {
     initOpenAI(func, { dokuUrl, token, environment, applicationName, skipResp });
-  } else if (func.generate && typeof func.generate === 'function') {
+  } else if (func.generate && typeof func.rerank === 'function') {
     initCohere(func, {dokuUrl, token, environment, applicationName, skipResp});
   } else if (typeof func.summarize=== 'function') {
     initAnthropic(func, {dokuUrl, token, environment, applicationName, skipResp});

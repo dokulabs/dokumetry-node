@@ -88,7 +88,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
         data.finishReason = generation.finish_reason;
       }
 
-      sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, token);
     }
 
     return response;
@@ -101,7 +101,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
     const duration = (end - start) / 1000;
 
     const model = params.model || 'embed-english-v2.0';
-    const prompt = params.texts;
+    const prompt = params.texts.toString();
 
     const data = {
       environment: environment,
@@ -114,7 +114,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
       prompt: prompt,
     };
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -146,7 +146,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
         response: response.text,
       };
 
-      sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, token);
     }
 
     return response;
@@ -176,7 +176,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
         response: response.summary,
       };
 
-      sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, token);
     }
 
     return response;

@@ -7,9 +7,9 @@ const cohere = new CohereClient({
 
 describe('Cohere Test', () => {
   before(async () => {
-    const module = await import('../src/cohere.js');
-    initCohere = module.default;
-    initCohere(cohere, {dokuURL: process.env.DOKU_URL, token: process.env.DOKU_TOKEN});
+    const module = await import('../src/index.js');
+    init = module.default;
+    await init(cohere, {dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
   });
 
   it('should return a response with "created" field', async () => {
@@ -41,7 +41,10 @@ describe('Cohere Test', () => {
 
       expect(summarizeResp.id).to.exist;
     } catch (error) {
-        console.error(`Rate limited`);
+      // Check if it's a rate limit error
+      if (error.message == "Cannot read properties of undefined (reading 'status')") {
+        console.error(`Daily Rate limit Reached`);
+      }
     }
   }).timeout(10000);
 
@@ -54,7 +57,10 @@ describe('Cohere Test', () => {
 
       expect(generate.prompt).to.equal('Doku');
     } catch (error) {
-      console.error(`Rate limited`);
+      // Check if it's a rate limit error
+      if (error.message == "Cannot read properties of undefined (reading 'status')") {
+        console.error(`Daily Rate limit Reached`);
+      }
     }
   }).timeout(10000);
 
@@ -62,13 +68,16 @@ describe('Cohere Test', () => {
     try {
       const embeddings = await cohere.embed({
         texts: ['This is a test'],
+        model: 'embed-multilingual-v2.0',
       });
-
       expect(embeddings.id).to.exist;
     } catch (error) {
-      console.error(`Rate limited`);
+      // Check if it's a rate limit error
+      if (error.message == "Cannot read properties of undefined (reading 'status')") {
+        console.error(`Daily Rate limit Reached`);
+      }
     }
-  }).timeout(10000);
+  }).timeout(20000);
 
   it('should return a response with object as "chat"', async () => {
     try {
@@ -79,7 +88,10 @@ describe('Cohere Test', () => {
 
       expect(chatResponse.response_id).to.exist;
     } catch (error) {
-      console.error(`Rate limited`);
+      // Check if it's a rate limit error
+      if (error.message == "Cannot read properties of undefined (reading 'status')") {
+        console.error(`Daily Rate limit Reached`);
+      }
     }
   }).timeout(10000);
 });

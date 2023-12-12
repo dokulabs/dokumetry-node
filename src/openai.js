@@ -92,7 +92,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         while (i < params.n && i < response.choices.length) {
           data.response = response.choices[i].message.content;
           i++;
-          sendData(data, dokuUrl, token);
+          await sendData(data, dokuUrl, token);
         }
         return response;
       }
@@ -100,7 +100,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       data.response = "Function called with tools";
     }
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -144,7 +144,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       }
     }
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -168,7 +168,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       totalTokens: response.usage.total_tokens,
     };
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -191,7 +191,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       finetuneJobStatus: response.status,
     };
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -227,7 +227,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         image: item[imageFormat],
       };
 
-      sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, token);
     }
 
     return response;
@@ -258,7 +258,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
         image: item[imageFormat],
       };
 
-      sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, token);
     }
 
     return response;
@@ -283,7 +283,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
       promptTokens: params.input.length,
     };
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };

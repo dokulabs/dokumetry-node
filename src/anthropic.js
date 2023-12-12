@@ -55,7 +55,7 @@ export default function initAnthropic(func, {dokuUrl, token, environment, applic
       response: response.completion,
     };
 
-    sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
