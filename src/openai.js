@@ -29,7 +29,7 @@ import {sendData} from './helpers.js';
  *   }
  * }
  */
-export default function initOpenAI(llm, { dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initOpenAI({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
   // Save original method
   const originalChatCreate = llm.chat.completions.create;
   const originalCompletionsCreate = llm.completions.create;
@@ -99,7 +99,8 @@ export default function initOpenAI(llm, { dokuUrl, token, environment, applicati
     } else {
       data.response = "Function called with tools";
     }
-    await sendData(data, dokuUrl, token);
+    console.log(data);
+    // await sendData(data, dokuUrl, token);
 
     return response;
   };

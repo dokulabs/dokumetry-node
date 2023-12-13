@@ -42,7 +42,7 @@ const openai = new OpenAI({
 });
 
 // Pass the above `openai` object along with your DOKU URL and Token and this will make sure that all OpenAI calls are automatically tracked.
-dokumetry.init(openai, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init({llm: openai, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const chatCompletion = await openai.chat.completions.create({
@@ -65,7 +65,7 @@ const anthropic = new Anthropic({
 });
 
 // Pass the above `anthropic` object along with your DOKU URL and Token and this will make sure that all Anthropic calls are automatically tracked.
-dokumetry.init(anthropic, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init({llm: anthropic, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const completion = await anthropic.completions.create({
@@ -89,7 +89,7 @@ const cohere = new CohereClient({
 });
 
 // Pass the above `cohere` object along with your DOKU URL and Token and this will make sure that all Cohere calls are automatically tracked.
-dokumetry.init(cohere, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 (async () => {
     const prediction = await cohere.generate({

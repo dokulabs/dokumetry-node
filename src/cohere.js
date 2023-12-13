@@ -53,7 +53,7 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function initCohere(llm, {dokuUrl, token, environment, applicationName, skipResp}) {
+export default function initCohere({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
   const originalGenerate = llm.generate;
   const originalEmbed = llm.embed;
   const originalChat = llm.chat;
@@ -87,7 +87,8 @@ export default function initCohere(llm, {dokuUrl, token, environment, applicatio
       if (!params.hasOwnProperty('stream') || params.stream !== true) {
         data.finishReason = generation.finish_reason;
       }
-      await sendData(data, dokuUrl, token);
+      console.log(data);
+      // await sendData(data, dokuUrl, token);
     }
 
     return response;

@@ -44,7 +44,7 @@ class DokuConfig {
  *   }
  * }
  */
-function init(llm, {dokuUrl, token, environment="default", applicationName="default", skipResp=false}) {
+function init({ llm, dokuUrl, token, environment="default", applicationName="default", skipResp=false }) {
   DokuConfig.dokuUrl = dokuUrl;
   DokuConfig.token = token;
   DokuConfig.llm = llm;
@@ -53,11 +53,11 @@ function init(llm, {dokuUrl, token, environment="default", applicationName="defa
   DokuConfig.skipResp = skipResp;
 
   if (llm.fineTuning && typeof llm.completions.create === 'function') {
-    initOpenAI(llm, { dokuUrl, token, environment, applicationName, skipResp });
+    initOpenAI({ llm, dokuUrl, token, environment, applicationName, skipResp });
   } else if (llm.generate && typeof llm.rerank === 'function') {
-    initCohere(llm, { dokuUrl, token, environment, applicationName, skipResp });
+    initCohere({ llm, dokuUrl, token, environment, applicationName, skipResp });
   } else if (typeof llm.summarize=== 'function') {
-    initAnthropic(llm, { dokuUrl, token, environment, applicationName, skipResp });
+    initAnthropic({ llm, dokuUrl, token, environment, applicationName, skipResp });
   }
 }
 

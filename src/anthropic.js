@@ -30,7 +30,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   }
  * }
  */
-export default function initAnthropic(llm, {dokuUrl, token, environment, applicationName, skipResp}) {
+export default function initAnthropic({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
   const originalCompletionsCreate = llm.completions.create;
 
   // Define wrapped method

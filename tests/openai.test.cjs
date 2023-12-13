@@ -12,7 +12,7 @@ describe('OpenAI Test', () => {
 
     const module = await import('../src/index.js');
     init = module.default;
-    await init(openai, {dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
+    await init({llm: openai, dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
   });
 
   it('should return a response with object as "chat.completion"', async () => {
