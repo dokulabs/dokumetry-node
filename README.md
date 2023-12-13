@@ -35,14 +35,14 @@ npm install dokumetry
 
 ```
 import OpenAI from 'openai';
-import 'dokulabs';
+import DokuMetry from 'dokumetry';
 
 const openai = new OpenAI({
   apiKey: 'My API Key', // defaults to process.env["OPENAI_API_KEY"]
 });
 
 // Pass the above `openai` object along with your DOKU URL and Token and this will make sure that all OpenAI calls are automatically tracked.
-dokumetry.init({llm: openai, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+DokuMetry.init({llm: openai, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const chatCompletion = await openai.chat.completions.create({
@@ -58,14 +58,14 @@ main();
 
 ```
 import Anthropic from '@anthropic-ai/sdk';
-import 'dokumetry';
+import DokuMetry from 'dokumetry';
 
 const anthropic = new Anthropic({
   apiKey: 'my api key', // defaults to process.env["ANTHROPIC_API_KEY"]
 });
 
 // Pass the above `anthropic` object along with your DOKU URL and Token and this will make sure that all Anthropic calls are automatically tracked.
-dokumetry.init({llm: anthropic, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+DokuMetry.init({llm: anthropic, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const completion = await anthropic.completions.create({
@@ -82,14 +82,14 @@ main();
 
 ```
 import { CohereClient } from "cohere-ai";
-import 'dokumetry';
+import DokuMetry from 'dokumetry';
 
 const cohere = new CohereClient({
     token: "YOUR_API_KEY",
 });
 
 // Pass the above `cohere` object along with your DOKU URL and Token and this will make sure that all Cohere calls are automatically tracked.
-dokumetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+DokuMetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 (async () => {
     const prediction = await cohere.generate({
@@ -105,7 +105,7 @@ dokumetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"}
 
 | Parameter         | Description                                               | Required      |
 |-------------------|-----------------------------------------------------------|---------------|
-| llm              | Language Learning Model (LLM) Object to track             | Yes           |
+| llm               | Language Learning Model (LLM) Object to track             | Yes           |
 | dokuURL           | URL of your Doku Instance                                 | Yes           |
 | token             | Your Doku Token                                           | Yes           |
 | environment       | Custom environment tag to include in your metrics         | Optional      |

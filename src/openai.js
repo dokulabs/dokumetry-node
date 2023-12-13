@@ -99,8 +99,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
     } else {
       data.response = "Function called with tools";
     }
-    console.log(data);
-    // await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
@@ -137,8 +136,8 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         while (i < params.n && i < response.choices.length) {
           data.response = response.choices[i].text;
           i++;
-          console.log(data);
-          // sendData(data, doku_url, token);
+
+          sendData(data, doku_url, token);
         }
         return response;
       }
