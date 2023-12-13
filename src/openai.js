@@ -3,7 +3,7 @@ import {sendData} from './helpers.js';
 /**
  * Initializes OpenAI functionality with performance tracking and data logging.
  *
- * @param {Object} func - The OpenAI function object.
+ * @param {Object} llm - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
@@ -15,7 +15,7 @@ import {sendData} from './helpers.js';
  * {
  *   "description": "Performance tracking for OpenAI APIs",
  *   "params": [
- *     {"name": "func", "type": "Object", "description": "OpenAI function."},
+ *     {"name": "llm", "type": "Object", "description": "OpenAI function."},
  *     {"name": "dokuUrl", "type": "string", "description": "The URL"},
  *     {"name": "token", "type": "string", "description": "The auth token."},
  *     {"name": "environment", "type": "string", "description": "The environment."},
@@ -29,18 +29,18 @@ import {sendData} from './helpers.js';
  *   }
  * }
  */
-export default function initOpenAI(func, { dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initOpenAI(llm, { dokuUrl, token, environment, applicationName, skipResp }) {
   // Save original method
-  const originalChatCreate = func.chat.completions.create;
-  const originalCompletionsCreate = func.completions.create;
-  const originalEmbeddingsCreate = func.embeddings.create;
-  const originalFineTuningJobsCreate = func.fineTuning.jobs.create;
-  const originalImagesCreate = func.images.generate;
-  const originalImagesCreateVariation = func.images.createVariation;
-  const originalAudioSpeechCreate = func.audio.speech.create;
+  const originalChatCreate = llm.chat.completions.create;
+  const originalCompletionsCreate = llm.completions.create;
+  const originalEmbeddingsCreate = llm.embeddings.create;
+  const originalFineTuningJobsCreate = llm.fineTuning.jobs.create;
+  const originalImagesCreate = llm.images.generate;
+  const originalImagesCreateVariation = llm.images.createVariation;
+  const originalAudioSpeechCreate = llm.audio.speech.create;
 
   // Define wrapped method
-  func.chat.completions.create = async function(params) {
+  llm.chat.completions.create = async function(params) {
     const start = performance.now();
     // Call original method
     const response = await originalChatCreate.call(this, params);
@@ -99,13 +99,12 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     } else {
       data.response = "Function called with tools";
     }
-
     await sendData(data, dokuUrl, token);
 
     return response;
   };
 
-  func.completions.create = async function(params) {
+  llm.completions.create = async function(params) {
     const start = performance.now();
     const response = await originalCompletionsCreate.call(this, params);
     const end = performance.now();
@@ -149,7 +148,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     return response;
   };
 
-  func.embeddings.create = async function(params) {
+  llm.embeddings.create = async function(params) {
     const start = performance.now();
     const response = await originalEmbeddingsCreate.call(this, params);
     const end = performance.now();
@@ -173,7 +172,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     return response;
   };
 
-  func.fineTuning.jobs.create = async function(params) {
+  llm.fineTuning.jobs.create = async function(params) {
     const start = performance.now();
     const response = await originalFineTuningJobsCreate.call(this, params);
     const end = performance.now();
@@ -196,7 +195,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     return response;
   };
 
-  func.images.generate = async function(params) {
+  llm.images.generate = async function(params) {
     const start = performance.now();
     const response = await originalImagesCreate.call(this, params);
     const end = performance.now();
@@ -233,7 +232,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     return response;
   };
 
-  func.images.createVariation = async function(params) {
+  llm.images.createVariation = async function(params) {
     const start = performance.now();
     const response = await originalImagesCreateVariation.call(this, params);
     const end = performance.now();
@@ -264,7 +263,7 @@ export default function initOpenAI(func, { dokuUrl, token, environment, applicat
     return response;
   };
 
-  func.audio.speech.create = async function(params) {
+  llm.audio.speech.create = async function(params) {
     const start = performance.now();
     const response = await originalAudioSpeechCreate.call(this, params);
     const end = performance.now();

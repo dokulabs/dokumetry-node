@@ -9,7 +9,7 @@ import initAnthropic from './anthropic.js';
 class DokuConfig {
   static dokuUrl = null;
   static token = null;
-  static func = null;
+  static llm = null;
   static environment = null;
   static applicationName = null;
   static skipResp = null;
@@ -18,7 +18,7 @@ class DokuConfig {
 /**
  * Initializes OpenAI functionality with performance tracking and data logging.
  *
- * @param {Object} func - The OpenAI function object.
+ * @param {Object} llm - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
@@ -30,7 +30,7 @@ class DokuConfig {
  * {
  *   "description": "Performance tracking for OpenAI APIs",
  *   "params": [
- *     {"name": "func", "type": "Object", "description": "OpenAI function."},
+ *     {"name": "llm", "type": "Object", "description": "OpenAI function."},
  *     {"name": "dokuUrl", "type": "string", "description": "The URL"},
  *     {"name": "token", "type": "string", "description": "The auth token."},
  *     {"name": "environment", "type": "string", "description": "The environment."},
@@ -44,19 +44,26 @@ class DokuConfig {
  *   }
  * }
  */
-export default function init(func, {dokuUrl, token, environment="default", applicationName="default", skipResp=false}) {
+function init(llm, {dokuUrl, token, environment="default", applicationName="default", skipResp=false}) {
   DokuConfig.dokuUrl = dokuUrl;
   DokuConfig.token = token;
-  DokuConfig.func = func;
+  DokuConfig.llm = llm;
   DokuConfig.environment = environment;
   DokuConfig.applicationName = applicationName;
   DokuConfig.skipResp = skipResp;
 
-  if (func.fineTuning && typeof func.completions.create === 'function') {
-    initOpenAI(func, { dokuUrl, token, environment, applicationName, skipResp });
-  } else if (func.generate && typeof func.rerank === 'function') {
-    initCohere(func, {dokuUrl, token, environment, applicationName, skipResp});
-  } else if (typeof func.summarize=== 'function') {
-    initAnthropic(func, {dokuUrl, token, environment, applicationName, skipResp});
+  if (llm.fineTuning && typeof llm.completions.create === 'function') {
+    initOpenAI(llm, { dokuUrl, token, environment, applicationName, skipResp });
+  } else if (llm.generate && typeof llm.rerank === 'function') {
+    initCohere(llm, { dokuUrl, token, environment, applicationName, skipResp });
+  } else if (typeof llm.summarize=== 'function') {
+    initAnthropic(llm, { dokuUrl, token, environment, applicationName, skipResp });
   }
 }
+
+// Setting up the dokumetry namespace object
+const DokuMetry = {
+  init: init,
+};
+
+export default DokuMetry;

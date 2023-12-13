@@ -4,7 +4,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
 /**
  * Initializes Anthropic functionality with performance tracking.
  *
- * @param {Object} func - The Anthropic function object.
+ * @param {Object} llm - The Anthropic function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
@@ -18,7 +18,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   "params": [
  *     {"name": "dokuUrl", "type": "string", "description": "Doku URL"},
  *     {"name": "token", "type": "string", "description": "Auth Token"},
- *     {"name": "func", "type": "Object", "description": "The Anthropic object"},
+ *     {"name": "llm", "type": "Object", "description": "The Anthropic object"},
  *     {"name": "environment", "type": "string", "description": "Environment"},
  *     {"name": "applicationName", "type": "string", "description": "Application Name"},
  *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
@@ -30,11 +30,11 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   }
  * }
  */
-export default function initAnthropic(func, {dokuUrl, token, environment, applicationName, skipResp}) {
-  const originalCompletionsCreate = func.completions.create;
+export default function initAnthropic(llm, {dokuUrl, token, environment, applicationName, skipResp}) {
+  const originalCompletionsCreate = llm.completions.create;
 
   // Define wrapped method
-  func.completions.create = async function(params) {
+  llm.completions.create = async function(params) {
     const start = performance.now();
     const response = await originalCompletionsCreate.apply(this, params);
     const end = performance.now();

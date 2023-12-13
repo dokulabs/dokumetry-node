@@ -26,7 +26,7 @@ All LLM observability usage data is sent directly to the Doku Platform for strea
 ## Installation
 
 ```bash
-npm install dokulabs
+npm install dokumetry
 ```
 
 ## Quick Use
@@ -42,7 +42,7 @@ const openai = new OpenAI({
 });
 
 // Pass the above `openai` object along with your DOKU URL and Token and this will make sure that all OpenAI calls are automatically tracked.
-dokulabs.init(openai, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init(openai, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const chatCompletion = await openai.chat.completions.create({
@@ -58,14 +58,14 @@ main();
 
 ```
 import Anthropic from '@anthropic-ai/sdk';
-import 'dokulabs';
+import 'dokumetry';
 
 const anthropic = new Anthropic({
   apiKey: 'my api key', // defaults to process.env["ANTHROPIC_API_KEY"]
 });
 
 // Pass the above `anthropic` object along with your DOKU URL and Token and this will make sure that all Anthropic calls are automatically tracked.
-dokulabs.init(anthropic, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init(anthropic, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const completion = await anthropic.completions.create({
@@ -82,14 +82,14 @@ main();
 
 ```
 import { CohereClient } from "cohere-ai";
-import 'dokulabs';
+import 'dokumetry';
 
 const cohere = new CohereClient({
     token: "YOUR_API_KEY",
 });
 
 // Pass the above `cohere` object along with your DOKU URL and Token and this will make sure that all Cohere calls are automatically tracked.
-dokulabs.init(cohere, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+dokumetry.init(cohere, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 (async () => {
     const prediction = await cohere.generate({
@@ -105,7 +105,7 @@ dokulabs.init(cohere, {dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
 
 | Parameter         | Description                                               | Required      |
 |-------------------|-----------------------------------------------------------|---------------|
-| func              | Language Learning Model (LLM) Object to track             | Yes           |
+| llm              | Language Learning Model (LLM) Object to track             | Yes           |
 | dokuURL           | URL of your Doku Instance                                 | Yes           |
 | token             | Your Doku Token                                           | Yes           |
 | environment       | Custom environment tag to include in your metrics         | Optional      |

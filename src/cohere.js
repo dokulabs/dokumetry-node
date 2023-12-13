@@ -27,7 +27,7 @@ function countTokens(text) {
 /**
  * Initializes Cohere functionality with performance tracking and data logging.
  *
- * @param {Object} func - The Cohere function object.
+ * @param {Object} llm - The Cohere function object.
  * @param {string} dokuUrl - The URL for logging data.
  * @param {string} token - The authentication token.
  * @param {string} environment - The environment.
@@ -39,7 +39,7 @@ function countTokens(text) {
  * {
  *   "description": "Initializes Cohere functionality and performance tracking",
  *   "params": [
- *     {"name": "func", "type": "Object", "description": "Cohere object"},
+ *     {"name": "llm", "type": "Object", "description": "Cohere object"},
  *     {"name": "dokuUrl", "type": "string", "description": "URL for Doku"},
  *     {"name": "token", "type": "string", "description": "Auth token."},
  *     {"name": "environment", "type": "string", "description": "Environment."},
@@ -53,14 +53,14 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function initCohere(func, {dokuUrl, token, environment, applicationName, skipResp}) {
-  const originalGenerate = func.generate;
-  const originalEmbed = func.embed;
-  const originalChat = func.chat;
-  const originalSummarize = func.summarize;
+export default function initCohere(llm, {dokuUrl, token, environment, applicationName, skipResp}) {
+  const originalGenerate = llm.generate;
+  const originalEmbed = llm.embed;
+  const originalChat = llm.chat;
+  const originalSummarize = llm.summarize;
 
   // Define wrapped methods
-  func.generate = async function(params) {
+  llm.generate = async function(params) {
     const start = performance.now();
     const response = await originalGenerate.call(this, params);
     const end = performance.now();
@@ -87,14 +87,13 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
       if (!params.hasOwnProperty('stream') || params.stream !== true) {
         data.finishReason = generation.finish_reason;
       }
-
       await sendData(data, dokuUrl, token);
     }
 
     return response;
   };
 
-  func.embed = async function(params) {
+  llm.embed = async function(params) {
     const start = performance.now();
     const response = await originalEmbed.call(this, params);
     const end = performance.now();
@@ -119,7 +118,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
     return response;
   };
 
-  func.chat = async function(params) {
+  llm.chat = async function(params) {
     const start = performance.now();
     const response = await originalChat.call(this, params);
     const end = performance.now();
@@ -152,7 +151,7 @@ export default function initCohere(func, {dokuUrl, token, environment, applicati
     return response;
   };
 
-  func.summarize = async function(params) {
+  llm.summarize = async function(params) {
     const start = performance.now();
     const response = await originalSummarize.call(this, params);
     const end = performance.now();
