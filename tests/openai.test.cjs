@@ -7,12 +7,12 @@ describe('OpenAI Test', () => {
 
   before(async () => {
     openai = new OpenAI({
-      apiKey: "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",
+      apiKey: process.env.OPENAI_API_TOKEN,
     });
 
     const module = await import('../src/index.js');
     DokuMetry = module.default;
-    await DokuMetry.init({llm: openai, dokuUrl: "http://139.59.54.59/", token: "abcd", environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
+    await DokuMetry.init({llm: openai, dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
   });
 
   it('should return a response with object as "chat.completion"', async () => {
