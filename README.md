@@ -1,5 +1,10 @@
 # Doku Node SDK
 
+[![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/node-sdk)
+[![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/tags)
+[![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/tags)
+
 [![Tests](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml)
 [![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
 
@@ -29,7 +34,7 @@ All LLM observability usage data is sent directly to the Doku Platform for strea
 npm install dokumetry
 ```
 
-## Quick Use
+## Quick Start ⚡️
 
 ### OpenAI
 
@@ -145,4 +150,4 @@ If you are interested in other runtime environments, please open or upvote an is
 We welcome contributors for documentation, integrations, and feature requests. Share your ideas or open an issue on GitHub to engage with the community.
 
 ## License
-Doku's Node SDK is licensed under the GPL-3.0 license. Your feedback and contributions are valued; let's build a better observability experience together!
+Doku's Node SDK is licensed under the [GPL-3.0 license](LICENSE). Your feedback and contributions are valued; let's build a better observability experience together!
