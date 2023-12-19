@@ -32,6 +32,6 @@
     "eslint": "^8.53.0",
     "eslint-config-google": "^0.14.0",
     "mocha": "^10.2.0",
-    "openai": "^4.17.3"
+    "openai": "^4.23.0"
   }
 }
