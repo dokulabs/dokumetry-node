@@ -1,4 +1,4 @@
-# Doku Node SDK
+# Doku Node SDK - dokumetry
 
 [![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/doku)
 [![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
@@ -8,7 +8,7 @@
 [![Tests](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml)
 [![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
 
-Doku Node SDK empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
+Doku Node SDK (`dokumetry`) empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
 
  - ✅ OpenAI
  - ✅ Anthropic
