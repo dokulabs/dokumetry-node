@@ -1,4 +1,4 @@
-# Doku Node SDK
+# Doku Node SDK - dokumetry
 
 [![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/doku)
 [![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
@@ -9,7 +9,7 @@
 [![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
 [![CodeQL](https://github.com/dokulabs/node-sdk/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/github-code-scanning/codeql)
 
-Doku Node SDK empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
+Doku Node SDK (`dokumetry`) empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
 
  - ✅ OpenAI
  - ✅ Anthropic
@@ -148,15 +148,15 @@ If you are interested in other runtime environments, please open or upvote an is
 
 ## Security
 
-Doku NPM Package(`dokumetry`) sends the observability data over HTTP/HTTPS to the Doku Ingester which uses key based authentication mechanism to ensure the security of your data. Be sure to keep your API keys confidential and manage permissions diligently. Refer to our [Security Policy](SECURITY)
+Doku NPM Package (`dokumetry`) sends the observability data over HTTP/HTTPS to the Doku Ingester which uses key based authentication mechanism to ensure the security of your data. Be sure to keep your API keys confidential and manage permissions diligently. Refer to our [Security Policy](SECURITY)
 
 ## Contributing
 
-We welcome contributions to the Doku NPM Package(`dokumetry`) project. Please refer to [CONTRIBUTING](CONTRIBUTING) for detailed guidelines on how you can participate.
+We welcome contributions to the Doku NPM Package (`dokumetry`) project. Please refer to [CONTRIBUTING](CONTRIBUTING) for detailed guidelines on how you can participate.
 
 ## License
 
-Doku NPM Package(`dokumetry`) is available under the [GPL-3.0](LICENSE).
+Doku NPM Package (`dokumetry`) is available under the [GPL-3.0](LICENSE).
 
 ## Support
 
