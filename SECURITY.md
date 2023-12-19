@@ -20,7 +20,7 @@ If you believe you have found a security vulnerability in `dokumetry` NPM Packag
 
 3. **Label the Issue**: Attach the "Security Vulnerability" label to your issue. This helps us quickly identify and prioritize security-related concerns.
 
-4. **Await Our Response**: The Doku NPM Package (`dokumetry`)maintainers will review your report and respond as quickly as possible. We ask that you keep any communications regarding the potential vulnerability confidential until we've been able to investigate and address the issue.
+4. **Await Our Response**: The Doku NPM Package (`dokumetry`) maintainers will review your report and respond as quickly as possible. We ask that you keep any communications regarding the potential vulnerability confidential until we've been able to investigate and address the issue.
 
 5. **Updates**: We will provide status updates on the issue thread. Once resolved, we will acknowledge the contribution in the issue and any applicable release notes.
 
