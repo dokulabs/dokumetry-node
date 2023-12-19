@@ -1,9 +1,9 @@
 # Doku Node SDK
 
-[![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/node-sdk)
+[![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/doku)
 [![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/tags)
-[![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/tags)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/pulse)
+[![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/graphs/contributors)
 
 [![Tests](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml)
 [![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
