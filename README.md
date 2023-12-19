@@ -148,15 +148,15 @@ If you are interested in other runtime environments, please open or upvote an is
 
 ## Security
 
-Doku NPM Package(`dokumetry`) sends the observability data over HTTP/HTTPS to the Doku Ingester which uses key based authentication mechanism to ensure the security of your data. Be sure to keep your API keys confidential and manage permissions diligently. Refer to our [Security Policy](SECURITY)
+Doku NPM Package (`dokumetry`) sends the observability data over HTTP/HTTPS to the Doku Ingester which uses key based authentication mechanism to ensure the security of your data. Be sure to keep your API keys confidential and manage permissions diligently. Refer to our [Security Policy](SECURITY)
 
 ## Contributing
 
-We welcome contributions to the Doku NPM Package(`dokumetry`) project. Please refer to [CONTRIBUTING](CONTRIBUTING) for detailed guidelines on how you can participate.
+We welcome contributions to the Doku NPM Package (`dokumetry`) project. Please refer to [CONTRIBUTING](CONTRIBUTING) for detailed guidelines on how you can participate.
 
 ## License
 
-Doku NPM Package(`dokumetry`) is available under the [GPL-3.0](LICENSE).
+Doku NPM Package (`dokumetry`) is available under the [GPL-3.0](LICENSE).
 
 ## Support
 
