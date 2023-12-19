@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.10",
-    "cohere-ai": "^7.4.0",
+    "cohere-ai": "^7.6.1",
     "eslint": "^8.53.0",
     "eslint-config-google": "^0.14.0",
     "mocha": "^10.2.0",
