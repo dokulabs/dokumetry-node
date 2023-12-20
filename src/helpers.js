@@ -28,7 +28,7 @@ export async function sendData(data, dokuUrl, authToken) {
   // Remove trailing slash if present
   const url = dokuUrl.endsWith('/') ? dokuUrl.slice(0, -1) : dokuUrl;
   try {
-    const response = await fetch(`${url}/data`, {
+    const response = await fetch(`${url}/api/push`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
