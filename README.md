@@ -1,6 +1,7 @@
 # Doku Node SDK - dokumetry
 
 [![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/doku)
+[![License](https://img.shields.io/github/license/dokulabs/node-sdk?label=license&logo=github&color=f80&logoColor=fff%22%20alt=%22License)](https://github.com/dokulabs/node-sdk/blob/main/LICENSE)
 [![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/pulse)
 [![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/graphs/contributors)
