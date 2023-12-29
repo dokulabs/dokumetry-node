@@ -77,14 +77,12 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       prompt: prompt,
     };
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
+    if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
       data.completionTokens = response.usage.completion_tokens;
       data.promptTokens = response.usage.prompt_tokens;
       data.totalTokens = response.usage.total_tokens;
       data.finishReason = response.choices[0].finish_reason;
-    }
 
-    if (!params.hasOwnProperty('tools')) {
       if (!params.hasOwnProperty('n') || params.n === 1) {
         data.response = response.choices[0].message.content;
       } else {
@@ -96,8 +94,19 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         }
         return response;
       }
-    } else {
-      data.response = "Function called with tools";
+    } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
+        data.response = "";
+        for await (const chunk of response) {
+            var content = chunk.choices[0].delta.content;
+            if (content) { 
+                data.response = data.response + content;
+            }
+        }
+    } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
+        data.response = "Function called with tools";
+        data.completionTokens = response.usage.completion_tokens;
+        data.promptTokens = response.usage.prompt_tokens;
+        data.totalTokens = response.usage.total_tokens;
     }
     await sendData(data, dokuUrl, token);
 
@@ -121,14 +130,12 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       prompt: params.prompt,
     };
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
+    if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
       data.completionTokens = response.usage.completion_tokens;
       data.promptTokens = response.usage.prompt_tokens;
       data.totalTokens = response.usage.total_tokens;
       data.finishReason = response.choices[0].finish_reason;
-    }
 
-    if (!params.hasOwnProperty('tools')) {
       if (!params.hasOwnProperty('n') || params.n === 1) {
         data.response = response.choices[0].text;
       } else {
@@ -137,10 +144,23 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           data.response = response.choices[i].text;
           i++;
 
-          sendData(data, doku_url, token);
+          await sendData(data, dokuUrl, token);
         }
         return response;
       }
+    } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
+        data.response = "";
+        for await (const chunk of response) {
+            var content = chunk.choices[0].delta.text;
+            if (content) { 
+                data.response = data.response + content;
+            }
+        }
+    } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
+        data.response = "Function called with tools";
+        data.completionTokens = response.usage.completion_tokens;
+        data.promptTokens = response.usage.prompt_tokens;
+        data.totalTokens = response.usage.total_tokens;
     }
 
     await sendData(data, dokuUrl, token);
