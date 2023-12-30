@@ -108,6 +108,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         data.promptTokens = response.usage.prompt_tokens;
         data.totalTokens = response.usage.total_tokens;
     }
+
     await sendData(data, dokuUrl, token);
 
     return response;
@@ -151,7 +152,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
     } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
         data.response = "";
         for await (const chunk of response) {
-            var content = chunk.choices[0].delta.text;
+            var content = chunk.choices[0].text;
             if (content) { 
                 data.response = data.response + content;
             }
@@ -220,7 +221,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
     const response = await originalImagesCreate.call(this, params);
     const end = performance.now();
     const duration = (end - start) / 1000;
-    const size = params.size || '10324x1024';
+    const size = params.size || '1024x1024';
     const model = params.model || 'dall-e-2';
     let imageFormat = 'url';
 
@@ -257,7 +258,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
     const response = await originalImagesCreateVariation.call(this, params);
     const end = performance.now();
     const duration = (end - start) / 1000;
-    const size = params.size || '10324x1024'; // Default size if not provided
+    const size = params.size || '1024x1024'; // Default size if not provided
     const model = params.model || 'dall-e-2';
     let imageFormat = 'url';
     if (params.response_format && params.response_format === 'b64_json') {
@@ -299,7 +300,6 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       model: params.model,
       prompt: params.input,
       audioVoice: params.voice,
-      promptTokens: params.input.length,
     };
 
     await sendData(data, dokuUrl, token);
