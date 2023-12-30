@@ -14,7 +14,7 @@ import {sendData} from './helpers.js';
  * }
  */
 function countTokens(text) {
-  const tokensPerWord = 2;
+  const tokensPerWord = 2.5;
 
   // Split the text into words
   const words = text.split(/\s+/);
@@ -128,25 +128,36 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
     const prompt = params.message;
     const cost = response.token_count['billed_tokens'] * 0.000002;
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
-      const data = {
-        environment: environment,
-        applicationName: applicationName,
-        sourceLanguage: 'Javascript',
-        endpoint: 'cohere.chat',
-        skipResp: skipResp,
-        requestDuration: duration,
-        completionTokens: response.token_count['response_tokens'],
-        promptTokens: response.token_count['prompt_tokens'],
-        totalTokens: response.token_count['total_tokens'],
-        usageCost: cost,
-        model: model,
-        prompt: prompt,
-        response: response.text,
-      };
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.chat',
+      skipResp: skipResp,
+      requestDuration: duration,
+      usageCost: cost,
+      model: model,
+      prompt: prompt,
+    };
 
-      await sendData(data, dokuUrl, token);
+    if (!params.hasOwnProperty('stream') || params.stream !== true) {
+        data.completionTokens = response.meta["billed_units"]["output_tokens"];
+        data.promptTokens = response.meta["billed_units"]["input_tokens"];
+        data.totalTokens = response.token_count["billed_tokens"];
+        data.response = response.text
+    } else {
+        data.response = ""
+        for await (const message of response) {
+          if (message.eventType === "text-generation") {
+              data.response += message.text
+          }
+      }
+        data.promptTokens = countTokens(prompt)
+        data.completionTokens = countTokens(data.response)
+        data.totalTokens = data.promptTokens + data.completionTokens
     }
+
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
