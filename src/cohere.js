@@ -57,6 +57,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
   const originalGenerate = llm.generate;
   const originalEmbed = llm.embed;
   const originalChat = llm.chat;
+  const originalChatStream = llm.chatStream;
   const originalSummarize = llm.summarize;
 
   // Define wrapped methods
@@ -126,7 +127,6 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
 
     const model = params.model || 'command';
     const prompt = params.message;
-    const cost = response.token_count['billed_tokens'] * 0.000002;
 
     const data = {
       environment: environment,
@@ -135,7 +135,6 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       endpoint: 'cohere.chat',
       skipResp: skipResp,
       requestDuration: duration,
-      usageCost: cost,
       model: model,
       prompt: prompt,
     };
@@ -157,6 +156,42 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
         data.totalTokens = data.promptTokens + data.completionTokens
     }
 
+    await sendData(data, dokuUrl, token);
+
+    return response;
+  };
+
+  llm.chatStream = async function* (params) {
+    const start = performance.now();
+    const response = await originalChatStream.call(this, params);
+
+    const model = params.model || 'command';
+    const prompt = params.message;
+
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.chat',
+      skipResp: skipResp,
+      model: model,
+      prompt: prompt,
+    };
+
+    
+    data.response = ""
+    for await (const message of response) {
+      data.response += message.eventType === "text-generation" ? message.text : "";
+      // Pass the message along so it's not consumed
+      yield message; // this allows the message to flow back to the original caller
+    }
+    data.promptTokens = countTokens(prompt)
+    data.completionTokens = countTokens(data.response)
+    data.totalTokens = data.promptTokens + data.completionTokens
+
+    const end = performance.now();
+    data.requestDuration = (end - start) / 1000;
+    console.log(data)
     await sendData(data, dokuUrl, token);
 
     return response;
