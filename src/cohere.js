@@ -84,6 +84,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
         prompt: prompt,
         response: generation.text,
       };
+      data.totalTokens = data.promptTokens + data.completionTokens;
 
       if (!params.hasOwnProperty('stream') || params.stream !== true) {
         data.finishReason = generation.finish_reason;
@@ -137,24 +138,11 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       requestDuration: duration,
       model: model,
       prompt: prompt,
+      promptTokens: response.meta["billed_units"]["output_tokens"],
+      completionTokens: response.meta["billed_units"]["input_tokens"],
+      totalTokens: response.token_count["billed_tokens"],
+      response: response.text,
     };
-
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
-        data.completionTokens = response.meta["billed_units"]["output_tokens"];
-        data.promptTokens = response.meta["billed_units"]["input_tokens"];
-        data.totalTokens = response.token_count["billed_tokens"];
-        data.response = response.text
-    } else {
-        data.response = ""
-        for await (const message of response) {
-          if (message.eventType === "text-generation") {
-              data.response += message.text
-          }
-      }
-        data.promptTokens = countTokens(prompt)
-        data.completionTokens = countTokens(data.response)
-        data.totalTokens = data.promptTokens + data.completionTokens
-    }
 
     await sendData(data, dokuUrl, token);
 
@@ -178,7 +166,6 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       prompt: prompt,
     };
 
-    
     data.response = ""
     for await (const message of response) {
       data.response += message.eventType === "text-generation" ? message.text : "";
@@ -206,23 +193,22 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
     const model = params.model || 'command';
     const prompt = params.text;
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
-      const data = {
-        environment: environment,
-        applicationName: applicationName,
-        sourceLanguage: 'Javascript',
-        endpoint: 'cohere.summarize',
-        skipResp: skipResp,
-        requestDuration: duration,
-        completionTokens: countTokens(response.summary),
-        promptTokens: countTokens(prompt),
-        model: model,
-        prompt: prompt,
-        response: response.summary,
-      };
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.summarize',
+      skipResp: skipResp,
+      requestDuration: duration,
+      completionTokens: countTokens(response.summary),
+      promptTokens: countTokens(prompt),
+      model: model,
+      prompt: prompt,
+      response: response.summary,
+    };
+    data.totalTokens = data.promptTokens + data.completionTokens;
 
-      await sendData(data, dokuUrl, token);
-    }
+    await sendData(data, dokuUrl, token);
 
     return response;
   };
