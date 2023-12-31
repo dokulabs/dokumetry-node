@@ -239,7 +239,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         prompt: params.prompt,
       };
 
-      if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
+      if (!params.hasOwnProperty('tools')) {
         data.completionTokens = response.usage.completion_tokens;
         data.promptTokens = response.usage.prompt_tokens;
         data.totalTokens = response.usage.total_tokens;
@@ -257,15 +257,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           }
           return response;
         }
-      } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
-          data.response = "";
-          for await (const chunk of response) {
-              var content = chunk.choices[0].text;
-              if (content) { 
-                  data.response = data.response + content;
-              }
-          }
-      } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
+      } else if (params.hasOwnProperty('tools')) {
           data.response = "Function called with tools";
           data.completionTokens = response.usage.completion_tokens;
           data.promptTokens = response.usage.prompt_tokens;
