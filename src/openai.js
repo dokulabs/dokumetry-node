@@ -6,7 +6,7 @@ import { Readable } from 'stream';
  *
  * @param {Object} llm - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
- * @param {string} token - The authentication token.
+ * @param {string} apiKey - The authentication apiKey.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
  * @param {boolean} skipResp - To skip waiting for API resopnse.
@@ -18,7 +18,7 @@ import { Readable } from 'stream';
  *   "params": [
  *     {"name": "llm", "type": "Object", "description": "OpenAI function."},
  *     {"name": "dokuUrl", "type": "string", "description": "The URL"},
- *     {"name": "token", "type": "string", "description": "The auth token."},
+ *     {"name": "apiKey", "type": "string", "description": "The auth apiKey."},
  *     {"name": "environment", "type": "string", "description": "The environment."},
  *     {"name": "applicationName", "type": "string", "description": "The application name."},
  *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
@@ -30,7 +30,7 @@ import { Readable } from 'stream';
  *   }
  * }
  */
-export default function initOpenAI({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initOpenAI({ llm, dokuUrl, apiKey, environment, applicationName, skipResp }) {
   // Save original method
   const originalChatCreate = llm.chat.completions.create;
   const originalCompletionsCreate = llm.completions.create;
@@ -104,7 +104,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           response: dataResponse
         };
 
-        await sendData(data, dokuUrl, token);
+        await sendData(data, dokuUrl, apiKey);
       })();
       
       // Return the pass-through stream to the original caller
@@ -159,7 +159,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           while (i < params.n && i < response.choices.length) {
             data.response = response.choices[i].message.content;
             i++;
-            await sendData(data, dokuUrl, token);
+            await sendData(data, dokuUrl, apiKey);
           }
           return response;
         }
@@ -169,7 +169,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           data.promptTokens = response.usage.prompt_tokens;
           data.totalTokens = response.usage.total_tokens;
       }
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
 
       return response;
     }
@@ -217,7 +217,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           response: dataResponse
         };
 
-        await sendData(data, dokuUrl, token);
+        await sendData(data, dokuUrl, apiKey);
       })();
       
       // Return the pass-through stream to the original caller
@@ -253,7 +253,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
             data.response = response.choices[i].text;
             i++;
 
-            await sendData(data, dokuUrl, token);
+            await sendData(data, dokuUrl, apiKey);
           }
           return response;
         }
@@ -264,7 +264,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
           data.totalTokens = response.usage.total_tokens;
       }
       
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
 
       return response;
     }
@@ -289,7 +289,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       totalTokens: response.usage.total_tokens,
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -312,7 +312,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       finetuneJobStatus: response.status,
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -348,7 +348,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         image: item[imageFormat],
       };
 
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
     }
 
     return response;
@@ -379,7 +379,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
         image: item[imageFormat],
       };
 
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
     }
 
     return response;
@@ -403,7 +403,7 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
       audioVoice: params.voice,
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };

@@ -8,7 +8,7 @@ import initAnthropic from './anthropic.js';
  */
 class DokuConfig {
   static dokuUrl = null;
-  static token = null;
+  static apiKey = null;
   static llm = null;
   static environment = null;
   static applicationName = null;
@@ -20,7 +20,7 @@ class DokuConfig {
  *
  * @param {Object} llm - The OpenAI function object.
  * @param {string} dokuUrl - The URL for logging data.
- * @param {string} token - The authentication token.
+ * @param {string} apiKey - The authentication apiKey.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
  * @param {boolean} skipResp - To skip waiting for API resopnse.
@@ -32,7 +32,7 @@ class DokuConfig {
  *   "params": [
  *     {"name": "llm", "type": "Object", "description": "OpenAI function."},
  *     {"name": "dokuUrl", "type": "string", "description": "The URL"},
- *     {"name": "token", "type": "string", "description": "The auth token."},
+ *     {"name": "apiKey", "type": "string", "description": "The auth apiKey."},
  *     {"name": "environment", "type": "string", "description": "The environment."},
  *     {"name": "applicationName", "type": "string", "description": "The application name."},
  *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
@@ -44,20 +44,20 @@ class DokuConfig {
  *   }
  * }
  */
-function init({ llm, dokuUrl, token, environment="default", applicationName="default", skipResp=false }) {
+function init({ llm, dokuUrl, apiKey, environment="default", applicationName="default", skipResp=false }) {
   DokuConfig.dokuUrl = dokuUrl;
-  DokuConfig.token = token;
+  DokuConfig.apiKey = apiKey;
   DokuConfig.llm = llm;
   DokuConfig.environment = environment;
   DokuConfig.applicationName = applicationName;
   DokuConfig.skipResp = skipResp;
 
   if (llm.fineTuning && typeof llm.completions.create === 'function') {
-    initOpenAI({ llm, dokuUrl, token, environment, applicationName, skipResp });
+    initOpenAI({ llm, dokuUrl, apiKey, environment, applicationName, skipResp });
   } else if (llm.generate && typeof llm.rerank === 'function') {
-    initCohere({ llm, dokuUrl, token, environment, applicationName, skipResp });
+    initCohere({ llm, dokuUrl, apiKey, environment, applicationName, skipResp });
   } else if (typeof llm.summarize=== 'function') {
-    initAnthropic({ llm, dokuUrl, token, environment, applicationName, skipResp });
+    initAnthropic({ llm, dokuUrl, apiKey, environment, applicationName, skipResp });
   }
 }
 

@@ -29,7 +29,7 @@ function countTokens(text) {
  *
  * @param {Object} llm - The Cohere function object.
  * @param {string} dokuUrl - The URL for logging data.
- * @param {string} token - The authentication token.
+ * @param {string} apiKey - The authentication apiKey.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
  * @param {boolean} skipResp - To skip waiting for API resopnse.
@@ -41,7 +41,7 @@ function countTokens(text) {
  *   "params": [
  *     {"name": "llm", "type": "Object", "description": "Cohere object"},
  *     {"name": "dokuUrl", "type": "string", "description": "URL for Doku"},
- *     {"name": "token", "type": "string", "description": "Auth token."},
+ *     {"name": "apiKey", "type": "string", "description": "Auth apiKey."},
  *     {"name": "environment", "type": "string", "description": "Environment."},
  *     {"name": "applicationName", "type": "string", "description": "Application name."},
  *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
@@ -53,7 +53,7 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function initCohere({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initCohere({ llm, dokuUrl, apiKey, environment, applicationName, skipResp }) {
   const originalGenerate = llm.generate;
   const originalEmbed = llm.embed;
   const originalChat = llm.chat;
@@ -89,7 +89,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       if (!params.hasOwnProperty('stream') || params.stream !== true) {
         data.finishReason = generation.finish_reason;
       }
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
     }
 
     return response;
@@ -116,7 +116,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       promptTokens: response.meta["billed_units"]["input_tokens"],
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -145,7 +145,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       response: response.text,
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -180,7 +180,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
     const end = performance.now();
     data.requestDuration = (end - start) / 1000;
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -209,7 +209,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
     };
     data.totalTokens = data.promptTokens + data.completionTokens;
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
