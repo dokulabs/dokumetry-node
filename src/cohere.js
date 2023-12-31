@@ -113,8 +113,10 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       requestDuration: duration,
       model: model,
       prompt: prompt,
+      promptTokens: response.meta["billed_units"]["input_tokens"],
     };
 
+    console.log(data)
     await sendData(data, dokuUrl, token);
 
     return response;
@@ -200,8 +202,8 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       endpoint: 'cohere.summarize',
       skipResp: skipResp,
       requestDuration: duration,
-      completionTokens: countTokens(response.summary),
-      promptTokens: countTokens(prompt),
+      completionTokens: response.meta["billed_units"]["output_tokens"],
+      promptTokens: response.meta["billed_units"]["input_tokens"],
       model: model,
       prompt: prompt,
       response: response.summary,
