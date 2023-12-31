@@ -2,14 +2,14 @@ const {CohereClient} = require('cohere-ai');
 const {expect} = require('chai');
 
 const cohere = new CohereClient({
-  token: process.env.COHERE_API_TOKEN,
+  apiKey: process.env.COHERE_API_TOKEN,
 });
 
 describe('Cohere Test', () => {
   before(async () => {
     const module = await import('../src/index.js');
     DokuMetry = module.default;
-    await DokuMetry.init({llm: cohere, dokuUrl: process.env.DOKU_URL, token: process.env.DOKU_TOKEN, environment: "DOKU-TESTING", applicationName: "doku-node-sdk-test", skipResp: false});
+    await DokuMetry.init({llm: cohere, dokuUrl: process.env.DOKU_URL, apiKey: process.env.DOKU_TOKEN, environment: "dokumetry-testing", applicationName: "dokumetry-node-test", skipResp: false});
   });
 
   it('should return a response with "created" field', async () => {

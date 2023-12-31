@@ -1,14 +1,14 @@
 # Doku Node SDK - dokumetry
 
 [![Doku NPM Package](https://img.shields.io/badge/Doku-orange)](https://github.com/dokulabs/doku)
-[![License](https://img.shields.io/github/license/dokulabs/node-sdk?label=license&logo=github&color=f80&logoColor=fff%22%20alt=%22License)](https://github.com/dokulabs/node-sdk/blob/main/LICENSE)
-[![Package Version](https://img.shields.io/github/tag/dokulabs/node-sdk.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/node-sdk/tags)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/pulse)
-[![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/node-sdk)](https://github.com/dokulabs/node-sdk/graphs/contributors)
+[![License](https://img.shields.io/github/license/dokulabs/dokumetry-node?label=license&logo=github&color=f80&logoColor=fff%22%20alt=%22License)](https://github.com/dokulabs/dokumetry-node/blob/main/LICENSE)
+[![Package Version](https://img.shields.io/github/tag/dokulabs/dokumetry-node.svg?&label=Package%20Version&logo=npm)](https://github.com/dokulabs/dokumetry-node/tags)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/dokulabs/dokumetry-node)](https://github.com/dokulabs/dokumetry-node/pulse)
+[![GitHub Contributors](https://img.shields.io/github/contributors/dokulabs/dokumetry-node)](https://github.com/dokulabs/dokumetry-node/graphs/contributors)
 
-[![Tests](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/tests.yml)
-[![Linting](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/lint.yml)
-[![CodeQL](https://github.com/dokulabs/node-sdk/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/dokulabs/node-sdk/actions/workflows/github-code-scanning/codeql)
+[![Tests](https://github.com/dokulabs/dokumetry-node/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/dokulabs/dokumetry-node/actions/workflows/tests.yml)
+[![Linting](https://github.com/dokulabs/dokumetry-node/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/dokulabs/dokumetry-node/actions/workflows/lint.yml)
+[![CodeQL](https://github.com/dokulabs/dokumetry-node/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/dokulabs/dokumetry-node/actions/workflows/github-code-scanning/codeql)
 
 [Doku Node SDK](https://www.npmjs.com/package/dokumetry) (`dokumetry`) empowers you to effortlessly track and monitor language learning model (LLM) usage data and metrics from your Javascript/Typescript code. It seamlessly integrates with major LLM Platforms:
 
@@ -48,8 +48,8 @@ const openai = new OpenAI({
   apiKey: 'My API Key', // defaults to process.env["OPENAI_API_KEY"]
 });
 
-// Pass the above `openai` object along with your DOKU URL and Token and this will make sure that all OpenAI calls are automatically tracked.
-DokuMetry.init({llm: openai, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+// Pass the above `openai` object along with your DOKU URL and API key and this will make sure that all OpenAI calls are automatically tracked.
+DokuMetry.init({llm: openai, dokuURL: "YOUR_DOKU_URL", apiKey: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const chatCompletion = await openai.chat.completions.create({
@@ -71,8 +71,8 @@ const anthropic = new Anthropic({
   apiKey: 'my api key', // defaults to process.env["ANTHROPIC_API_KEY"]
 });
 
-// Pass the above `anthropic` object along with your DOKU URL and Token and this will make sure that all Anthropic calls are automatically tracked.
-DokuMetry.init({llm: anthropic, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+// Pass the above `anthropic` object along with your DOKU URL and API key and this will make sure that all Anthropic calls are automatically tracked.
+DokuMetry.init({llm: anthropic, dokuURL: "YOUR_DOKU_URL", apiKey: "YOUR_DOKU_TOKEN"})
 
 async function main() {
   const completion = await anthropic.completions.create({
@@ -92,11 +92,11 @@ import { CohereClient } from "cohere-ai";
 import DokuMetry from 'dokumetry';
 
 const cohere = new CohereClient({
-    token: "YOUR_API_KEY",
+    apiKey: "YOUR_API_KEY",
 });
 
-// Pass the above `cohere` object along with your DOKU URL and Token and this will make sure that all Cohere calls are automatically tracked.
-DokuMetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"})
+// Pass the above `cohere` object along with your DOKU URL and API key and this will make sure that all Cohere calls are automatically tracked.
+DokuMetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", apiKey: "YOUR_DOKU_TOKEN"})
 
 (async () => {
     const prediction = await cohere.generate({
@@ -114,7 +114,7 @@ DokuMetry.init({llm: cohere, dokuURL: "YOUR_DOKU_URL", token: "YOUR_DOKU_TOKEN"}
 |-------------------|-----------------------------------------------------------|---------------|
 | llm               | Language Learning Model (LLM) Object to track             | Yes           |
 | dokuURL           | URL of your Doku Instance                                 | Yes           |
-| token             | Your Doku Token                                           | Yes           |
+| apiKey            | Your Doku API key                                         | Yes           |
 | environment       | Custom environment tag to include in your metrics         | Optional      |
 | applicationName   | Custom application name tag for your metrics              | Optional      |
 | skipResp          | Skip response from the Doku Ingester for faster execution | Optional      |
@@ -161,4 +161,4 @@ Doku NPM Package (`dokumetry`) is available under the [GPL-3.0](LICENSE).
 
 ## Support
 
-For support, issues, or feature requests, submit an issue through the [GitHub issues](https://github.com/dokulabs/node-sdk/issues) associated with this repository.
+For support, issues, or feature requests, submit an issue through the [GitHub issues](https://github.com/dokulabs/dokumetry-node/issues) associated with this repository.

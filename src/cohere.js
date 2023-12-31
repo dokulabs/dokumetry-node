@@ -14,7 +14,7 @@ import {sendData} from './helpers.js';
  * }
  */
 function countTokens(text) {
-  const tokensPerWord = 2;
+  const tokensPerWord = 2.5;
 
   // Split the text into words
   const words = text.split(/\s+/);
@@ -29,7 +29,7 @@ function countTokens(text) {
  *
  * @param {Object} llm - The Cohere function object.
  * @param {string} dokuUrl - The URL for logging data.
- * @param {string} token - The authentication token.
+ * @param {string} apiKey - The authentication apiKey.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
  * @param {boolean} skipResp - To skip waiting for API resopnse.
@@ -41,7 +41,7 @@ function countTokens(text) {
  *   "params": [
  *     {"name": "llm", "type": "Object", "description": "Cohere object"},
  *     {"name": "dokuUrl", "type": "string", "description": "URL for Doku"},
- *     {"name": "token", "type": "string", "description": "Auth token."},
+ *     {"name": "apiKey", "type": "string", "description": "Auth apiKey."},
  *     {"name": "environment", "type": "string", "description": "Environment."},
  *     {"name": "applicationName", "type": "string", "description": "Application name."},
  *     {"name": "skipResp", "type": "boolean", "description": "To skip waiting for API resopnse."}
@@ -53,10 +53,11 @@ function countTokens(text) {
  *   }
  * }
  */
-export default function initCohere({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initCohere({ llm, dokuUrl, apiKey, environment, applicationName, skipResp }) {
   const originalGenerate = llm.generate;
   const originalEmbed = llm.embed;
   const originalChat = llm.chat;
+  const originalChatStream = llm.chatStream;
   const originalSummarize = llm.summarize;
 
   // Define wrapped methods
@@ -83,11 +84,12 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
         prompt: prompt,
         response: generation.text,
       };
+      data.totalTokens = data.promptTokens + data.completionTokens;
 
       if (!params.hasOwnProperty('stream') || params.stream !== true) {
         data.finishReason = generation.finish_reason;
       }
-      await sendData(data, dokuUrl, token);
+      await sendData(data, dokuUrl, apiKey);
     }
 
     return response;
@@ -111,9 +113,10 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       requestDuration: duration,
       model: model,
       prompt: prompt,
+      promptTokens: response.meta["billed_units"]["input_tokens"],
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -126,27 +129,58 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
 
     const model = params.model || 'command';
     const prompt = params.message;
-    const cost = response.token_count['billed_tokens'] * 0.000002;
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
-      const data = {
-        environment: environment,
-        applicationName: applicationName,
-        sourceLanguage: 'Javascript',
-        endpoint: 'cohere.chat',
-        skipResp: skipResp,
-        requestDuration: duration,
-        completionTokens: response.token_count['response_tokens'],
-        promptTokens: response.token_count['prompt_tokens'],
-        totalTokens: response.token_count['total_tokens'],
-        usageCost: cost,
-        model: model,
-        prompt: prompt,
-        response: response.text,
-      };
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.chat',
+      skipResp: skipResp,
+      requestDuration: duration,
+      model: model,
+      prompt: prompt,
+      promptTokens: response.meta["billed_units"]["output_tokens"],
+      completionTokens: response.meta["billed_units"]["input_tokens"],
+      totalTokens: response.token_count["billed_tokens"],
+      response: response.text,
+    };
 
-      await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
+
+    return response;
+  };
+
+  llm.chatStream = async function* (params) {
+    const start = performance.now();
+    const response = await originalChatStream.call(this, params);
+
+    const model = params.model || 'command';
+    const prompt = params.message;
+
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.chat',
+      skipResp: skipResp,
+      model: model,
+      prompt: prompt,
+    };
+
+    data.response = ""
+    for await (const message of response) {
+      data.response += message.eventType === "text-generation" ? message.text : "";
+      // Pass the message along so it's not consumed
+      yield message; // this allows the message to flow back to the original caller
     }
+    data.promptTokens = countTokens(prompt)
+    data.completionTokens = countTokens(data.response)
+    data.totalTokens = data.promptTokens + data.completionTokens
+
+    const end = performance.now();
+    data.requestDuration = (end - start) / 1000;
+
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };
@@ -160,23 +194,22 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
     const model = params.model || 'command';
     const prompt = params.text;
 
-    if (!params.hasOwnProperty('stream') || params.stream !== true) {
-      const data = {
-        environment: environment,
-        applicationName: applicationName,
-        sourceLanguage: 'Javascript',
-        endpoint: 'cohere.summarize',
-        skipResp: skipResp,
-        requestDuration: duration,
-        completionTokens: countTokens(response.summary),
-        promptTokens: countTokens(prompt),
-        model: model,
-        prompt: prompt,
-        response: response.summary,
-      };
+    const data = {
+      environment: environment,
+      applicationName: applicationName,
+      sourceLanguage: 'Javascript',
+      endpoint: 'cohere.summarize',
+      skipResp: skipResp,
+      requestDuration: duration,
+      completionTokens: response.meta["billed_units"]["output_tokens"],
+      promptTokens: response.meta["billed_units"]["input_tokens"],
+      model: model,
+      prompt: prompt,
+      response: response.summary,
+    };
+    data.totalTokens = data.promptTokens + data.completionTokens;
 
-      await sendData(data, dokuUrl, token);
-    }
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };

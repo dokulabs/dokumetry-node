@@ -6,7 +6,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *
  * @param {Object} llm - The Anthropic function object.
  * @param {string} dokuUrl - The URL for logging data.
- * @param {string} token - The authentication token.
+ * @param {string} apiKey - The authentication apiKey.
  * @param {string} environment - The environment.
  * @param {string} applicationName - The application name.
  * @param {boolean} skipResp - To skip waiting for API resopnse.
@@ -17,7 +17,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   "description": "Initializes Anthropic function and performance tracking",
  *   "params": [
  *     {"name": "dokuUrl", "type": "string", "description": "Doku URL"},
- *     {"name": "token", "type": "string", "description": "Auth Token"},
+ *     {"name": "apiKey", "type": "string", "description": "Auth apiKey"},
  *     {"name": "llm", "type": "Object", "description": "The Anthropic object"},
  *     {"name": "environment", "type": "string", "description": "Environment"},
  *     {"name": "applicationName", "type": "string", "description": "Application Name"},
@@ -30,7 +30,7 @@ import {countTokens} from '@anthropic-ai/tokenizer';
  *   }
  * }
  */
-export default function initAnthropic({ llm, dokuUrl, token, environment, applicationName, skipResp }) {
+export default function initAnthropic({ llm, dokuUrl, apiKey, environment, applicationName, skipResp }) {
   const originalCompletionsCreate = llm.completions.create;
 
   // Define wrapped method
@@ -55,7 +55,7 @@ export default function initAnthropic({ llm, dokuUrl, token, environment, applic
       response: response.completion,
     };
 
-    await sendData(data, dokuUrl, token);
+    await sendData(data, dokuUrl, apiKey);
 
     return response;
   };

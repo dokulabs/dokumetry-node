@@ -1,18 +1,18 @@
 /**
- * Sends data to the specified Doku URL using the provided authentication token.
+ * Sends data to the specified Doku URL using the provided authentication apiKey.
  *
  * @param {Object} data - The data to be sent.
  * @param {string} dokuUrl - The Doku URL for sending data.
- * @param {string} authToken - The authentication token.
+ * @param {string} authToken - The authentication apiKey.
  * @return {Promise<Response>} - A Promise that resolves to the HTTP response.
  *
  * @jsondoc
  * {
- *   "description": "Sends data to the Doku URL using the provided token.",
+ *   "description": "Sends data to the Doku URL using the provided apiKey.",
  *   "params": [
  *     {"name": "data", "type": "Object", "description": "data to be sent."},
  *     {"name": "dokuUrl", "type": "string", "description": "Doku URL"},
- *     {"name": "authToken", "type": "string", "description": "Auth token."}
+ *     {"name": "authToken", "type": "string", "description": "Auth apiKey."}
  *   ],
  *   "returns": {
  *     "type": "Promise<Response>",
