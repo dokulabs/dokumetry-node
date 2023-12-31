@@ -116,7 +116,6 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
       promptTokens: response.meta["billed_units"]["input_tokens"],
     };
 
-    console.log(data)
     await sendData(data, dokuUrl, token);
 
     return response;
@@ -180,7 +179,7 @@ export default function initCohere({ llm, dokuUrl, token, environment, applicati
 
     const end = performance.now();
     data.requestDuration = (end - start) / 1000;
-    console.log(data)
+
     await sendData(data, dokuUrl, token);
 
     return response;
