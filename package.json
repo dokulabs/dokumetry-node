@@ -24,7 +24,8 @@
   "author": "Doku Labs",
   "license": "ISC",
   "dependencies": {
-    "@anthropic-ai/tokenizer": "^0.0.4"
+    "@anthropic-ai/tokenizer": "^0.0.4",
+    "stream": "^0.0.2"
   },
   "devDependencies": {
     "chai": "^4.3.10",

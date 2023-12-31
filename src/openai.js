@@ -1,4 +1,5 @@
 import {sendData} from './helpers.js';
+import { Readable } from 'stream';
 
 /**
  * Initializes OpenAI functionality with performance tracking and data logging.
@@ -42,131 +43,239 @@ export default function initOpenAI({ llm, dokuUrl, token, environment, applicati
   // Define wrapped method
   llm.chat.completions.create = async function(params) {
     const start = performance.now();
-    // Call original method
-    const response = await originalChatCreate.call(this, params);
-    const end = performance.now();
-    const duration = (end - start) / 1000;
-
-    let formattedMessages = [];
-    for (let message of params.messages) {
-      let role = message.role;
-      let content = message.content;
-
-      if (Array.isArray(content)) {
-        let contentStr = content.map(item => {
-          if (item.type) {
-            return `${item.type}: ${item.text || item.image_url}`;
-          } else {
-            return `text: ${item.text}`;
+    let streaming = params.stream || false;
+    if (streaming) {
+      // Call original method
+      const originalResponseStream = await originalChatCreate.call(this, params);
+  
+      // Create a pass-through stream
+      const passThroughStream = new Readable({
+        read() {},
+        objectMode: true // Set to true because the chunks are objects
+      });
+  
+      let dataResponse = '';
+  
+      // Immediately-invoked async function to handle streaming
+      (async () => {
+        for await (const chunk of originalResponseStream) {
+          var content = chunk.choices[0]?.delta?.content;
+          if (content) {
+            dataResponse += content;
+            passThroughStream.push(chunk); // Push chunk to the pass-through stream
           }
-        }).join(", ");
-        formattedMessages.push(`${role}: ${contentStr}`);
-      } else {
-        formattedMessages.push(`${role}: ${content}`);
-      }
+        }
+        passThroughStream.push(null); // Signal end of the pass-through stream
+  
+        // Process response data after stream has ended
+        const end = performance.now();
+        const duration = (end - start) / 1000;
+  
+        let formattedMessages = [];
+        for (let message of params.messages) {
+          let role = message.role;
+          let content = message.content;
+
+          if (Array.isArray(content)) {
+            let contentStr = content.map(item => {
+              if (item.type) {
+                return `${item.type}: ${item.text || item.image_url}`;
+              } else {
+                return `text: ${item.text}`;
+              }
+            }).join(", ");
+            formattedMessages.push(`${role}: ${contentStr}`);
+          } else {
+            formattedMessages.push(`${role}: ${content}`);
+          }
+        }
+        let prompt = formattedMessages.join("\n");
+  
+        // Prepare the data object for Doku
+        const data = {
+          environment: environment,
+          applicationName: applicationName,
+          sourceLanguage: 'Javascript',
+          endpoint: 'openai.chat.completions',
+          skipResp: skipResp,
+          requestDuration: duration,
+          model: params.model,
+          prompt: prompt,
+          response: dataResponse
+        };
+
+        await sendData(data, dokuUrl, token);
+      })();
+      
+      // Return the pass-through stream to the original caller
+      return passThroughStream;
     }
-    let prompt = formattedMessages.join("\n");
-    const data = {
-      environment: environment,
-      applicationName: applicationName,
-      sourceLanguage: 'Javascript',
-      endpoint: 'openai.chat.completions',
-      skipResp: skipResp,
-      requestDuration: duration,
-      model: params.model,
-      prompt: prompt,
-    };
+    else {
+      // Call original method
+      const response = await originalChatCreate.call(this, params);
+      const end = performance.now();
+      const duration = (end - start) / 1000;
 
-    if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
-      data.completionTokens = response.usage.completion_tokens;
-      data.promptTokens = response.usage.prompt_tokens;
-      data.totalTokens = response.usage.total_tokens;
-      data.finishReason = response.choices[0].finish_reason;
+      let formattedMessages = [];
+      for (let message of params.messages) {
+        let role = message.role;
+        let content = message.content;
 
-      if (!params.hasOwnProperty('n') || params.n === 1) {
-        data.response = response.choices[0].message.content;
-      } else {
-        let i = 0;
-        while (i < params.n && i < response.choices.length) {
-          data.response = response.choices[i].message.content;
-          i++;
-          await sendData(data, dokuUrl, token);
-        }
-        return response;
-      }
-    } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
-        data.response = "";
-        for await (const chunk of response) {
-            var content = chunk.choices[0].delta.content;
-            if (content) { 
-                data.response = data.response + content;
+        if (Array.isArray(content)) {
+          let contentStr = content.map(item => {
+            if (item.type) {
+              return `${item.type}: ${item.text || item.image_url}`;
+            } else {
+              return `text: ${item.text}`;
             }
+          }).join(", ");
+          formattedMessages.push(`${role}: ${contentStr}`);
+        } else {
+          formattedMessages.push(`${role}: ${content}`);
         }
-    } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
-        data.response = "Function called with tools";
+      }
+      let prompt = formattedMessages.join("\n");
+      const data = {
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
+        endpoint: 'openai.chat.completions',
+        skipResp: skipResp,
+        requestDuration: duration,
+        model: params.model,
+        prompt: prompt,
+      };
+
+      if (!params.hasOwnProperty('tools')) {
         data.completionTokens = response.usage.completion_tokens;
         data.promptTokens = response.usage.prompt_tokens;
         data.totalTokens = response.usage.total_tokens;
+        data.finishReason = response.choices[0].finish_reason;
+
+        if (!params.hasOwnProperty('n') || params.n === 1) {
+          data.response = response.choices[0].message.content;
+        } else {
+          let i = 0;
+          while (i < params.n && i < response.choices.length) {
+            data.response = response.choices[i].message.content;
+            i++;
+            await sendData(data, dokuUrl, token);
+          }
+          return response;
+        }
+      } else if (params.hasOwnProperty('tools')) {
+          data.response = "Function called with tools";
+          data.completionTokens = response.usage.completion_tokens;
+          data.promptTokens = response.usage.prompt_tokens;
+          data.totalTokens = response.usage.total_tokens;
+      }
+      await sendData(data, dokuUrl, token);
+
+      return response;
     }
-
-    await sendData(data, dokuUrl, token);
-
-    return response;
   };
 
   llm.completions.create = async function(params) {
     const start = performance.now();
-    const response = await originalCompletionsCreate.call(this, params);
-    const end = performance.now();
-    const duration = (end - start) / 1000;
-
-    const data = {
-      environment: environment,
-      applicationName: applicationName,
-      sourceLanguage: 'Javascript',
-      endpoint: 'openai.completions',
-      skipResp: skipResp,
-      requestDuration: duration,
-      model: params.model,
-      prompt: params.prompt,
-    };
-
-    if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
-      data.completionTokens = response.usage.completion_tokens;
-      data.promptTokens = response.usage.prompt_tokens;
-      data.totalTokens = response.usage.total_tokens;
-      data.finishReason = response.choices[0].finish_reason;
-
-      if (!params.hasOwnProperty('n') || params.n === 1) {
-        data.response = response.choices[0].text;
-      } else {
-        let i = 0;
-        while (i < params.n && i < response.choices.length) {
-          data.response = response.choices[i].text;
-          i++;
-
-          await sendData(data, dokuUrl, token);
+    let streaming = params.stream || false;
+    if (streaming) {
+      // Call original method
+      const originalResponseStream = await originalChatCreate.call(this, params);
+  
+      // Create a pass-through stream
+      const passThroughStream = new Readable({
+        read() {},
+        objectMode: true // Set to true because the chunks are objects
+      });
+  
+      let dataResponse = '';
+  
+      // Immediately-invoked async function to handle streaming
+      (async () => {
+        for await (const chunk of originalResponseStream) {
+          var content = chunk.choices[0].text;
+          if (content) {
+            dataResponse += content;
+            passThroughStream.push(chunk); // Push chunk to the pass-through stream
+          }
         }
-        return response;
-      }
-    } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
-        data.response = "";
-        for await (const chunk of response) {
-            var content = chunk.choices[0].text;
-            if (content) { 
-                data.response = data.response + content;
-            }
-        }
-    } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
-        data.response = "Function called with tools";
+        passThroughStream.push(null); // Signal end of the pass-through stream
+  
+        // Process response data after stream has ended
+        const end = performance.now();
+        const duration = (end - start) / 1000;
+        // Prepare the data object for Doku
+        const data = {
+          environment: environment,
+          applicationName: applicationName,
+          sourceLanguage: 'Javascript',
+          endpoint: 'openai.completions',
+          skipResp: skipResp,
+          requestDuration: duration,
+          model: params.model,
+          prompt: params.prompt,
+          response: dataResponse
+        };
+
+        await sendData(data, dokuUrl, token);
+      })();
+      
+      // Return the pass-through stream to the original caller
+      return passThroughStream;
+    }
+    else {
+      const response = await originalCompletionsCreate.call(this, params);
+      const end = performance.now();
+      const duration = (end - start) / 1000;
+
+      const data = {
+        environment: environment,
+        applicationName: applicationName,
+        sourceLanguage: 'Javascript',
+        endpoint: 'openai.completions',
+        skipResp: skipResp,
+        requestDuration: duration,
+        model: params.model,
+        prompt: params.prompt,
+      };
+
+      if ((!params.hasOwnProperty('stream') || params.stream == false) && (!params.hasOwnProperty('tools'))) {
         data.completionTokens = response.usage.completion_tokens;
         data.promptTokens = response.usage.prompt_tokens;
         data.totalTokens = response.usage.total_tokens;
+        data.finishReason = response.choices[0].finish_reason;
+
+        if (!params.hasOwnProperty('n') || params.n === 1) {
+          data.response = response.choices[0].text;
+        } else {
+          let i = 0;
+          while (i < params.n && i < response.choices.length) {
+            data.response = response.choices[i].text;
+            i++;
+
+            await sendData(data, dokuUrl, token);
+          }
+          return response;
+        }
+      } else if ((params.hasOwnProperty('stream') && params.stream == true) && (!params.hasOwnProperty('tools'))) {
+          data.response = "";
+          for await (const chunk of response) {
+              var content = chunk.choices[0].text;
+              if (content) { 
+                  data.response = data.response + content;
+              }
+          }
+      } else if ((!params.hasOwnProperty('stream') || params.stream == false) && (params.hasOwnProperty('tools'))) {
+          data.response = "Function called with tools";
+          data.completionTokens = response.usage.completion_tokens;
+          data.promptTokens = response.usage.prompt_tokens;
+          data.totalTokens = response.usage.total_tokens;
+      }
+      
+      await sendData(data, dokuUrl, token);
+
+      return response;
     }
-
-    await sendData(data, dokuUrl, token);
-
-    return response;
   };
 
   llm.embeddings.create = async function(params) {
