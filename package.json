@@ -28,7 +28,7 @@
     "stream": "^0.0.2"
   },
   "devDependencies": {
-    "chai": "^4.3.10",
+    "chai": "^5.0.0",
     "cohere-ai": "^7.6.1",
     "eslint": "^8.56.0",
     "eslint-config-google": "^0.14.0",
