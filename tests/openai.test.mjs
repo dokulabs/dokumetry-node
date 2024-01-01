@@ -1,6 +1,7 @@
-const OpenAI = require('openai');
-const {expect} = require('chai');
-const fs = require('fs');
+import OpenAI from 'openai';
+import {expect} from 'chai';
+import DokuMetry from '../src/index.js';
+import fs from "fs";
 
 describe('OpenAI Test', () => {
   let openai;
@@ -9,9 +10,6 @@ describe('OpenAI Test', () => {
     openai = new OpenAI({
       apiKey: process.env.OPENAI_API_TOKEN,
     });
-
-    const module = await import('../src/index.js');
-    DokuMetry = module.default;
     await DokuMetry.init({llm: openai, dokuUrl: process.env.DOKU_URL, apiKey: process.env.DOKU_TOKEN, environment: "dokumetry-testing", applicationName: "dokumetry-node-test", skipResp: false});
   });
 
