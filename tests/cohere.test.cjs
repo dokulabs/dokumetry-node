@@ -1,5 +1,5 @@
 const {CohereClient} = require('cohere-ai');
-const {expect} = require('chai');
+import {expect} from 'chai';
 
 const cohere = new CohereClient({
   apiKey: process.env.COHERE_API_TOKEN,
