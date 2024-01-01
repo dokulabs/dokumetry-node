@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import {expect} from 'chai';
 import DokuMetry from '../src/index.js';
-import 'fs';
+import fs from "fs";
 
 describe('OpenAI Test', () => {
   let openai;
