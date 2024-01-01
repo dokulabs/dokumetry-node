@@ -4,7 +4,7 @@
   "description": "An NPM Package for tracking OpenAI API calls and sending usage metrics to Doku",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha tests/**/*.test.cjs"
+    "test": "mocha tests/**/*.test.mjs"
   },
   "type": "module",
   "repository": {
